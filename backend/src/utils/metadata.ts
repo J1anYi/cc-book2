@@ -4,6 +4,7 @@ import path from 'path';
 interface Metadata {
   title: string | null;
   author: string | null;
+  coverPath?: string | null;
 }
 
 export async function extractMetadata(filePath: string, fileType: string): Promise<Metadata> {
@@ -22,11 +23,19 @@ export async function extractMetadata(filePath: string, fileType: string): Promi
 }
 
 async function extractEpubMetadata(filePath: string, fileName: string): Promise<Metadata> {
-  // Simplified EPUB metadata extraction
-  return { title: fileName, author: null };
+  // TODO: Implement full EPUB metadata extraction using epub.js
+  // - Extract title from OPF file
+  // - Extract author(s) from OPF file
+  // - Extract cover image from EPUB container
+  // - Use library: npm install epub
+  return { title: fileName, author: null, coverPath: null };
 }
 
 async function extractPdfMetadata(filePath: string, fileName: string): Promise<Metadata> {
-  // Simplified PDF metadata extraction
-  return { title: fileName, author: null };
+  // TODO: Implement full PDF metadata extraction using pdf-parse
+  // - Extract title from PDF info dictionary
+  // - Extract author from PDF info dictionary
+  // - Extract first page as cover image
+  // - Use library: npm install pdf-parse
+  return { title: fileName, author: null, coverPath: null };
 }

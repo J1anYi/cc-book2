@@ -1,45 +1,43 @@
 ---
 gsd_state_version: 1.0
-milestone: v0.2
-milestone_name: 安全加固与功能完善
-status: complete
-last_updated: "2026-05-13T12:00:00.000Z"
+milestone: v0.3
+milestone_name: 阅读器入口与书籍信息展示
+status: planning
+last_updated: "2026-05-13T14:00:00.000Z"
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 3
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # State — 书籍观看系统
 
 ## Current Position
 
-Phase: v0.2 Complete
-Plan: All phases shipped
-Status: Ready for verification
-Last activity: 2026-05-13 — v0.2 milestone complete
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-13 — Milestone v0.3 started
 
 ---
 
-## Completed Phases
+## Project Reference
 
-| Phase | Status | Progress |
-|-------|--------|----------|
-| Phase 4: 安全加固 | ✅ Complete | 100% |
-| Phase 5: 功能完善 | ✅ Complete | 100% |
-| Phase 6: 质量保障 | ✅ Complete | 100% |
+See: .planning/PROJECT.md (updated 2026-05-13)
+
+**Core value:** 上传书籍 → 在线阅读 → 管理收藏
+**Current focus:** 阅读器入口与书籍信息展示
+
+---
+
+## Completed Milestones
+
+| Milestone | Status | Summary |
+|-----------|--------|---------|
+| v0.1 | ✅ Complete | 初始版本 - 上传、阅读、管理 |
+| v0.2 | ✅ Complete | 安全加固与功能完善 |
 
 ---
 
-## Recent Activity
-
-| Date | Action | Details |
-|------|--------|---------|
-| 2026-05-13 | Phase 6 Complete | Vitest tests, morgan logging |
-| 2026-05-13 | Phase 5 Complete | Metadata extraction, DB indexes |
-| 2026-05-13 | Phase 4 Complete | JWT auth, rate limiting, validation |
-| 2026-05-13 | v0.2 Milestone Started | Security hardening, feature completion |
-
----
 *Last updated: 2026-05-13*

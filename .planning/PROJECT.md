@@ -27,14 +27,16 @@
 - 本地部署为主
 - 简单认证即可
 
-## Current Milestone: v0.2 安全加固与功能完善
+## Current Milestone: v0.3 阅读器入口与书籍信息展示
 
-**Goal:** 修复关键安全问题，完善核心功能体验
+**Goal:** 让用户上传书籍后能看到完整书籍信息，并能直接进入阅读器
 
 **Target features:**
-- 安全加固：JWT认证替换硬编码凭证、速率限制、输入验证、CORS配置
-- 功能完善：书籍列表分页、EPUB/PDF元数据提取、文件类型验证
-- 质量保障：引入测试框架、统一错误处理
+- 书库首页：展示所有已上传书籍的卡片式列表（封面、标题、作者、类型、阅读进度）
+- 阅读入口：从书籍卡片直接进入阅读器
+- 书籍详情页：查看书籍的完整信息和元数据
+- 继续阅读：显示最近阅读的书籍，一键继续
+- 前端导航优化：重新组织页面结构，突出书库和阅读功能
 
 ## Requirements
 
@@ -45,13 +47,17 @@
 - ✓ 书库管理（分类、删除、搜索） — v0.1
 - ✓ 阅读辅助功能（进度保存、书签、笔记） — v0.1
 - ✓ 管理后台认证 — v0.1
+- ✓ JWT认证替换硬编码凭证 — v0.2
+- ✓ 速率限制、输入验证、CORS配置 — v0.2
+- ✓ 书籍列表分页、元数据提取 — v0.2
+- ✓ 测试框架、统一错误处理 — v0.2
 
 ### Active
 
-v0.2 Requirements:
-- 安全加固 (SECURITY)
-- 功能完善 (FEATURES)
-- 质量保障 (QUALITY)
+v0.3 Requirements:
+- 书库首页展示 (LIBRARY)
+- 阅读入口体验 (READER)
+- 书籍详情页 (DETAILS)
 
 ### Out of Scope
 
@@ -74,4 +80,4 @@ v0.2 Requirements:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-05-13 starting v0.2 milestone*
+*Last updated: 2026-05-13 starting v0.3 milestone*

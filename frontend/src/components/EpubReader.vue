@@ -34,8 +34,16 @@ const canGoNext = ref(false);
 
 onMounted(async () => {
   try {
-    book.value = ePub(props.fileUrl);
+    // Fetch the EPUB file as ArrayBuffer (more reliable than Blob URL)
+    const response = await fetch(props.fileUrl);
+    const arrayBuffer = await response.arrayBuffer();
+
+    book.value = ePub(arrayBuffer);
     await book.value.ready;
+
+    // Get spine items count
+    const spine = book.value.spine;
+    totalLocations.value = spine ? spine.length : 0;
 
     rendition.value = book.value.renderTo(bookContainer.value!, {
       width: '100%',
@@ -43,35 +51,41 @@ onMounted(async () => {
       spread: 'none'
     });
 
-    await rendition.value.display();
-
     // Load saved progress
     const progress = await getProgress(props.bookId);
-    if (progress && progress.current_chapter) {
-      await rendition.value.display(progress.current_chapter);
+    const startChapter = progress && progress.current_chapter ? progress.current_chapter : undefined;
+
+    await rendition.value.display(startChapter);
+
+    // Update initial location
+    const location = rendition.value.currentLocation();
+    if (location && location.start) {
+      currentLocation.value = location.start.index;
+      canGoPrev.value = currentLocation.value > 0;
+      canGoNext.value = currentLocation.value < totalLocations.value - 1;
     }
 
     // Update location on navigation
     rendition.value.on('locationChanged', (location: Location) => {
-      currentLocation.value = location.start.index;
-      // @ts-ignore - epubjs type definition issue
-      totalLocations.value = book.value?.spine?.length || 0;
-      canGoPrev.value = currentLocation.value > 0;
-      canGoNext.value = currentLocation.value < totalLocations.value - 1;
+      if (location && location.start) {
+        currentLocation.value = location.start.index;
+        canGoPrev.value = currentLocation.value > 0;
+        canGoNext.value = currentLocation.value < totalLocations.value - 1;
 
-      // Save progress
-      saveProgress({
-        book_id: props.bookId,
-        current_page: location.start.index,
-        current_chapter: location.start.href,
-        progress_percent: (location.start.index / totalLocations.value) * 100
-      });
+        // Save progress
+        saveProgress({
+          book_id: props.bookId,
+          current_page: location.start.index,
+          current_chapter: location.start.href,
+          progress_percent: (location.start.index / totalLocations.value) * 100
+        });
 
-      emit('progress', {
-        page: location.start.index,
-        chapter: location.start.href,
-        percent: (location.start.index / totalLocations.value) * 100
-      });
+        emit('progress', {
+          page: location.start.index,
+          chapter: location.start.href,
+          percent: (location.start.index / totalLocations.value) * 100
+        });
+      }
     });
 
     // Apply saved theme

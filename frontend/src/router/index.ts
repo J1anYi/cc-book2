@@ -28,8 +28,7 @@ const routes = [
   {
     path: '/admin',
     name: 'Admin',
-    component: Admin,
-    meta: { requiresAuth: true }
+    component: Admin
   },
   {
     path: '/read/:id',
@@ -43,15 +42,9 @@ const router = createRouter({
   routes
 });
 
-// Route guard for authentication
+// Route guard for authentication (no longer blocking, Admin handles its own auth)
 router.beforeEach((to, _from, next) => {
-  const token = localStorage.getItem('adminToken');
-
-  if (to.meta.requiresAuth && !token) {
-    next({ name: 'Upload' });
-  } else {
-    next();
-  }
+  next();
 });
 
 export default router;

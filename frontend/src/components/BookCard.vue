@@ -1,5 +1,6 @@
 <template>
   <div class="book-card" @click="goToReader">
+    <button class="detail-btn" @click.stop="goToDetail" title="查看详情">ℹ️</button>
     <div class="card-cover">
       <img
         v-if="book.cover_path"
@@ -59,10 +60,15 @@ function getCoverUrl(coverPath: string | null): string {
 function goToReader() {
   router.push(`/read/${props.book.id}`);
 }
+
+function goToDetail() {
+  router.push(`/book/${props.book.id}`);
+}
 </script>
 
 <style scoped>
 .book-card {
+  position: relative;
   background: white;
   border-radius: 12px;
   overflow: hidden;
@@ -74,6 +80,28 @@ function goToReader() {
 .book-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.detail-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 10;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-btn:hover {
+  background: white;
 }
 
 .card-cover {

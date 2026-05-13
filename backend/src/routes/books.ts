@@ -109,4 +109,50 @@ router.delete('/:id', authMiddleware, validateParams(idParamSchema), async (req,
   }
 });
 
+router.patch('/:id', authMiddleware, validateParams(idParamSchema), async (req, res) => {
+  try {
+    const { id } = req.params as any;
+    const { category, tags, category_id } = req.body;
+
+    const database = db();
+    const book = database.get('SELECT * FROM books WHERE id = ?', [id]);
+    if (!book) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    // Build dynamic update query
+    const updates: string[] = [];
+    const params: any[] = [];
+
+    if (category !== undefined) {
+      updates.push('category = ?');
+      params.push(category);
+    }
+    if (tags !== undefined) {
+      updates.push('tags = ?');
+      params.push(tags);
+    }
+    if (category_id !== undefined) {
+      updates.push('category_id = ?');
+      params.push(category_id);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: 'No fields to update' });
+    }
+
+    updates.push('updated_at = CURRENT_TIMESTAMP');
+    params.push(id);
+
+    database.run(`UPDATE books SET ${updates.join(', ')} WHERE id = ?`, params);
+    await database.save();
+
+    const updatedBook = database.get('SELECT * FROM books WHERE id = ?', [id]);
+    res.json(updatedBook);
+  } catch (error) {
+    console.error('Update error:', error);
+    res.status(500).json({ error: 'Failed to update book' });
+  }
+});
+
 export default router;

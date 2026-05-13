@@ -3,6 +3,7 @@ import Library from '../views/Library.vue';
 import Upload from '../views/Upload.vue';
 import Admin from '../views/Admin.vue';
 import Reader from '../views/Reader.vue';
+import BookDetail from '../views/BookDetail.vue';
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
   {
     path: '/library',
     redirect: '/'
+  },
+  {
+    path: '/book/:id',
+    name: 'BookDetail',
+    component: BookDetail
   },
   {
     path: '/admin',

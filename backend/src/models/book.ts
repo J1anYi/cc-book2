@@ -1,88 +1,155 @@
-import Database from 'better-sqlite3';
+import initSqlJs from 'sql.js';
 import path from 'path';
+import fs from 'fs/promises';
 
-const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), 'data', 'books.db');
-const db = new Database(dbPath);
+// SQL.js compatible database wrapper
+class SQLiteDatabase {
+  private db: any;
+  private dbPath: string;
 
-// Enable WAL mode for better concurrent read performance
-db.pragma('journal_mode = WAL');
+  constructor(db: any, dbPath: string) {
+    this.db = db;
+    this.dbPath = dbPath;
+  }
 
-// Create tables
-db.exec(`
-  CREATE TABLE IF NOT EXISTS books (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    author TEXT,
-    file_path TEXT NOT NULL,
-    file_type TEXT NOT NULL,
-    cover_path TEXT,
-    category TEXT,
-    category_id INTEGER,
-    tags TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+  run(sql: string, params: any[] = []) {
+    this.db.run(sql, params);
+    return { lastInsertRowid: this.db.exec("SELECT last_insert_rowid() as id")[0]?.values[0]?.[0] || 0, changes: 0 };
+  }
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE,
-    description TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+  get(sql: string, params: any[] = []): any {
+    const stmt = this.db.prepare(sql);
+    stmt.bind(params);
+    if (stmt.step()) {
+      const row = stmt.getAsObject();
+      stmt.free();
+      return row;
+    }
+    stmt.free();
+    return undefined;
+  }
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS reading_progress (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    book_id INTEGER NOT NULL,
-    current_page INTEGER DEFAULT 0,
-    current_chapter TEXT,
-    progress_percent REAL DEFAULT 0,
-    last_read_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
-  )
-`);
+  all(sql: string, params: any[] = []): any[] {
+    const stmt = this.db.prepare(sql);
+    stmt.bind(params);
+    const results: any[] = [];
+    while (stmt.step()) {
+      results.push(stmt.getAsObject());
+    }
+    stmt.free();
+    return results;
+  }
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS bookmarks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    book_id INTEGER NOT NULL,
-    page_number INTEGER,
-    chapter TEXT,
-    position TEXT,
-    note TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
-  )
-`);
+  exec(sql: string) {
+    this.db.run(sql);
+  }
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS notes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    book_id INTEGER NOT NULL,
-    page_number INTEGER,
-    chapter TEXT,
-    position TEXT,
-    content TEXT NOT NULL,
-    color TEXT DEFAULT 'yellow',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
-  )
-`);
+  async save() {
+    const data = this.db.export();
+    const buffer = Buffer.from(data);
+    await fs.mkdir(path.dirname(this.dbPath), { recursive: true });
+    await fs.writeFile(this.dbPath, buffer);
+  }
+}
 
-// Create indexes for search optimization
-db.exec(`
-  CREATE INDEX IF NOT EXISTS idx_books_title ON books(title);
-  CREATE INDEX IF NOT EXISTS idx_books_author ON books(author);
-  CREATE INDEX IF NOT EXISTS idx_books_category_id ON books(category_id);
-  CREATE INDEX IF NOT EXISTS idx_books_created_at ON books(created_at);
-  CREATE INDEX IF NOT EXISTS idx_reading_progress_book_id ON reading_progress(book_id);
-  CREATE INDEX IF NOT EXISTS idx_reading_progress_last_read ON reading_progress(last_read_at);
-  CREATE INDEX IF NOT EXISTS idx_bookmarks_book_id ON bookmarks(book_id);
-  CREATE INDEX IF NOT EXISTS idx_notes_book_id ON notes(book_id);
-`);
+let dbInstance: SQLiteDatabase | null = null;
 
-export { db };
+async function initDatabase(): Promise<SQLiteDatabase> {
+  const SQL = await initSqlJs();
+  
+  const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), 'data', 'books.db');
+  
+  let db: any;
+  try {
+    const buffer = await fs.readFile(dbPath);
+    db = new SQL.Database(buffer);
+  } catch {
+    db = new SQL.Database();
+  }
+  
+  dbInstance = new SQLiteDatabase(db, dbPath);
+
+  // Create tables
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS books (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      author TEXT,
+      file_path TEXT NOT NULL,
+      file_type TEXT NOT NULL,
+      cover_path TEXT,
+      category TEXT,
+      category_id INTEGER,
+      tags TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS reading_progress (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      book_id INTEGER NOT NULL,
+      current_page INTEGER DEFAULT 0,
+      current_chapter TEXT,
+      progress_percent REAL DEFAULT 0,
+      last_read_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+    )
+  `);
+
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS bookmarks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      book_id INTEGER NOT NULL,
+      page_number INTEGER,
+      chapter TEXT,
+      position TEXT,
+      note TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+    )
+  `);
+
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS notes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      book_id INTEGER NOT NULL,
+      page_number INTEGER,
+      chapter TEXT,
+      position TEXT,
+      content TEXT NOT NULL,
+      color TEXT DEFAULT 'yellow',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Create indexes
+  dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_title ON books(title)`);
+  dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_author ON books(author)`);
+  
+  await dbInstance.save();
+  
+  return dbInstance;
+}
+
+// Sync getter for use after init
+function getDb(): SQLiteDatabase {
+  if (!dbInstance) {
+    throw new Error('Database not initialized. Call initDatabase first.');
+  }
+  return dbInstance;
+}
+
+export { initDatabase, getDb as db, SQLiteDatabase };

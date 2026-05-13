@@ -1,16 +1,16 @@
 <template>
   <div class="app">
     <header>
-      <h1>📚 书籍观看系统</h1>
+      <NavBar />
     </header>
     <main>
-      <Upload />
+      <router-view />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import Upload from './views/Upload.vue';
+import NavBar from './components/NavBar.vue';
 </script>
 
 <style>

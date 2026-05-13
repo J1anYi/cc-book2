@@ -4,7 +4,7 @@
 
     <div class="upload-area" @dragover.prevent @drop.prevent="handleDrop">
       <input type="file" ref="fileInput" @change="handleFileSelect" accept=".epub,.pdf,.txt" hidden />
-      <button @click="$refs.fileInput?.click()">选择文件</button>
+      <button @click="() => fileInput?.click()">选择文件</button>
       <p>支持 EPUB, PDF, TXT 格式</p>
     </div>
 
@@ -17,6 +17,10 @@
 
     <div v-if="message" :class="['message', messageType]">
       {{ message }}
+      <div v-if="lastUploadedBook" class="post-upload-actions">
+        <router-link to="/" class="btn btn-secondary">查看书库</router-link>
+        <router-link :to="`/read/${lastUploadedBook.id}`" class="btn btn-primary">立即阅读</router-link>
+      </div>
     </div>
 
     <div class="book-list">
@@ -40,6 +44,7 @@ const uploading = ref(false);
 const message = ref('');
 const messageType = ref<'success' | 'error'>('success');
 const books = ref<any[]>([]);
+const lastUploadedBook = ref<any>(null);
 
 const handleFileSelect = (e: Event) => {
   const target = e.target as HTMLInputElement;
@@ -64,6 +69,7 @@ const uploadFile = async () => {
     const result = await uploadBook(selectedFile.value);
     message.value = `上传成功: ${result.title}`;
     messageType.value = 'success';
+    lastUploadedBook.value = result;
     selectedFile.value = null;
     await loadBooks();
   } catch (error: any) {
@@ -144,5 +150,38 @@ onMounted(() => {
 .book-list li {
   padding: 10px;
   border-bottom: 1px solid #eee;
+}
+
+.post-upload-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-primary {
+  background: #42b883;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #3aa876;
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #e0e0e0;
 }
 </style>

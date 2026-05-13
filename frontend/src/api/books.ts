@@ -4,6 +4,15 @@ const api = axios.create({
   baseURL: '/api'
 });
 
+// Add auth token to requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('adminToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 export interface Book {
   id: number;
   title: string;
@@ -11,6 +20,14 @@ export interface Book {
   file_path: string;
   file_type: string;
   cover_path: string | null;
+  category: string | null;
+  tags: string | null;
+  created_at: string;
+}
+
+export interface Category {
+  id: number;
+  name: string;
   created_at: string;
 }
 
@@ -27,12 +44,50 @@ export async function uploadBook(file: File): Promise<Book> {
   return response.data;
 }
 
-export async function getBooks(): Promise<Book[]> {
-  const response = await api.get('/books');
-  return response.data;
+export async function getBooks(search?: string): Promise<Book[]> {
+  const params = search ? { search } : {};
+  const response = await api.get('/books', { params });
+  return response.data.data || response.data;
 }
 
 export async function getBook(id: number): Promise<Book> {
   const response = await api.get(`/books/${id}`);
   return response.data;
+}
+
+export async function deleteBook(id: number): Promise<void> {
+  await api.delete(`/books/${id}`);
+}
+
+export async function updateBook(id: number, data: { category?: string; tags?: string }): Promise<Book> {
+  const response = await api.patch(`/books/${id}`, data);
+  return response.data;
+}
+
+export async function login(password: string): Promise<{ success: boolean; token?: string }> {
+  const response = await api.post('/admin/login', { password });
+  return response.data;
+}
+
+export async function logout(): Promise<void> {
+  await api.post('/admin/logout');
+}
+
+export async function getCategories(): Promise<Category[]> {
+  const response = await api.get('/categories');
+  return response.data;
+}
+
+export async function createCategory(name: string): Promise<Category> {
+  const response = await api.post('/categories', { name });
+  return response.data;
+}
+
+export async function updateCategory(id: number, name: string): Promise<Category> {
+  const response = await api.put(`/categories/${id}`, { name });
+  return response.data;
+}
+
+export async function deleteCategory(id: number): Promise<void> {
+  await api.delete(`/categories/${id}`);
 }

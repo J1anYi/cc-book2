@@ -1,10 +1,33 @@
+---
+gsd_state_version: 1.0
+milestone: v0.2
+milestone_name: 安全加固与功能完善
+status: planning
+last_updated: "2026-05-13T10:00:00.000Z"
+progress:
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+---
+
 # State — 书籍观看系统
 
-## Current Status
+## Current Position
 
-**Milestone:** v0.1 (初始版本)  
-**Phase:** Phase 2 (书籍管理后台)  
-**Status:** Ready to Plan
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-13 — Milestone v0.2 started
+
+---
+
+## Previous Milestone
+
+✅ **v0.1 初始版本** — Shipped 2026-04-29
+- 3 phases, 3 plans, 11 tasks
+- 21/21 requirements complete
+- Archive: milestones/v0.1-*
 
 ---
 
@@ -12,15 +35,13 @@
 
 | Phase | Status | Progress |
 |-------|--------|----------|
-| Phase 1: 项目基础与书籍上传 | ✅ Complete | 100% |
-| Phase 2: 书籍管理后台 | Ready | 0% |
-| Phase 3: 在线阅读器 | Pending | 0% |
+| v0.1 Phases | ✅ Complete | 100% |
 
 ---
 
 ## Active Work
 
-- Start Phase 2 planning
+Defining v0.2 requirements based on CONCERNS.md analysis.
 
 ---
 
@@ -28,8 +49,8 @@
 
 | Date | Action | Details |
 |------|--------|---------|
-| 2026-04-29 | Phase 1 Complete | Backend + Frontend + UAT passed |
-| 2026-04-29 | Project Created | Initialized project with 3 phases |
+| 2026-05-13 | v0.2 Milestone Started | Security hardening, feature completion |
+| 2026-04-29 | v0.1 Milestone Complete | All 3 phases shipped, archived |
 
 ---
-*Last updated: 2026-04-29*
+*Last updated: 2026-05-13*

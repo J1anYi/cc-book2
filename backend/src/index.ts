@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import booksRouter from './routes/books.js';
 import adminRouter from './routes/admin.js';
 import categoriesRouter from './routes/categories.js';
@@ -24,6 +25,10 @@ app.use(helmet({
   },
   crossOriginEmbedderPolicy: false,
 }));
+
+// Request logging
+const logFormat = process.env.NODE_ENV === 'production' ? 'combined' : 'dev';
+app.use(morgan(logFormat));
 
 // CORS configuration - allow configured origins
 const allowedOrigins = process.env.CORS_ORIGINS 
@@ -65,3 +70,5 @@ app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
   console.log(`CORS allowed origins: ${allowedOrigins.join(', ')}`);
 });
+
+export { app }; // Export for testing

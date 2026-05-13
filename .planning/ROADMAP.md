@@ -1,11 +1,11 @@
-# Roadmap — 书籍观看系统 v0.2
+# Roadmap — 书籍观看系统 v0.3
 
 ## Overview
 
-**Milestone:** v0.2 安全加固与功能完善
-**Total Phases:** 3
+**Milestone:** v0.3 阅读器入口与书籍信息展示
+**Total Phases:** 2
 **Total Requirements:** 18
-**Starting Phase:** Phase 4 (继续v0.1编号)
+**Starting Phase:** Phase 7 (继续v0.2编号)
 
 ---
 
@@ -13,109 +13,101 @@
 
 | Phase | Name | Goal | Requirements | Success Criteria |
 |-------|------|------|--------------|------------------|
-| 4 | 安全加固 | 实现JWT认证和安全防护 | SECURITY-01~07 | 5 |
-| 5 | 功能完善 | 分页、元数据提取、性能优化 | FEATURES-01~06 | 5 |
-| 6 | 质量保障 | 测试框架、错误处理统一 | QUALITY-01~05 | 4 |
+| 7 | 书库首页与阅读入口 | 实现书库卡片展示和阅读入口 | LIBRARY-01~06, READER-01~04 | 6 |
+| 8 | 书籍详情与导航优化 | 实现详情页和导航优化 | DETAILS-01~05, UPLOAD-01~03 | 5 |
 
 ---
 
-## Phase 4: 安全加固
+## Phase 7: 书库首页与阅读入口
 
-**Goal:** 实现JWT认证替换硬编码凭证，添加安全防护措施
+**Goal:** 将首页从上传页面改为书库页面，以卡片形式展示书籍，提供直接进入阅读器的入口
 
 ### Requirements
 
-- SECURITY-01: 使用JWT替换硬编码凭证进行认证
-- SECURITY-02: 登录端点添加速率限制防止暴力破解
-- SECURITY-03: 配置CORS限制允许的源
-- SECURITY-04: 添加helmet安全头中间件
-- SECURITY-05: 实现输入验证（使用Zod或Joi）
-- SECURITY-06: 文件上传时验证真实文件类型
-- SECURITY-07: 实现完整的登出功能
+- LIBRARY-01: 用户访问首页时看到书库页面（而非上传页面）
+- LIBRARY-02: 书库页面以卡片形式展示所有已上传书籍
+- LIBRARY-03: 每张书籍卡片显示封面、标题、作者、文件类型
+- LIBRARY-04: 书籍卡片显示阅读进度百分比
+- LIBRARY-05: 用户可以按分类筛选书籍
+- LIBRARY-06: 用户可以搜索书籍（标题、作者）
+- READER-01: 用户点击书籍卡片可直接进入阅读器
+- READER-02: 书库首页显示"继续阅读"区域，展示最近阅读的书籍
+- READER-03: 点击"继续阅读"书籍，自动跳转到上次阅读位置
+- READER-04: 阅读器页面有明确的返回书库按钮
 
 ### Success Criteria
 
-1. 用户登录返回有效JWT token
-2. 连续失败登录5次后被锁定15分钟
-3. CORS只允许配置的源访问API
-4. 所有API响应包含安全头
-5. 无效输入返回400错误而非服务器错误
+1. 访问 / 显示书库页面而非上传页面
+2. 书籍以卡片形式展示，每张卡片包含封面、标题、作者、类型、进度
+3. 点击卡片直接进入阅读器阅读
+4. 首页显示"继续阅读"区域，包含最近阅读的书籍
+5. 阅读器有明确的返回书库按钮
+6. 支持按分类筛选和搜索
 
 ### Technical Notes
 
-- 使用 jsonwebtoken 库生成/验证JWT
-- 使用 express-rate-limit 实现速率限制
-- 使用 file-type 库检查文件magic number
+- 创建 Library.vue 替代 Upload.vue 作为首页
+- 创建 BookCard.vue 组件展示书籍卡片
+- 修改路由配置，将 / 指向 Library
+- 使用现有 API: GET /api/books, GET /api/reading/history
+- 需要后端 API 支持分类筛选（已有）
 
 ---
 
-## Phase 5: 功能完善
+## Phase 8: 书籍详情与导航优化
 
-**Goal:** 实现分页、元数据提取、性能优化
-
-### Requirements
-
-- FEATURES-01: 书籍列表分页（默认每页20条）
-- FEATURES-02: EPUB元数据提取（标题、作者、封面）
-- FEATURES-03: PDF元数据提取（标题、作者）
-- FEATURES-04: 数据库添加搜索索引优化
-- FEATURES-05: 异步文件操作
-- FEATURES-06: 环境变量配置支持
-
-### Success Criteria
-
-1. 书籍列表API支持page/limit参数
-2. 上传EPUB后自动显示标题和封面
-3. 上传PDF后自动显示标题
-4. 搜索响应时间<100ms（1000本书）
-5. 文件操作不阻塞API响应
-
-### Technical Notes
-
-- EPUB使用 epub 库解析元数据
-- PDF使用 pdf-parse 提取信息
-- 使用 CREATE INDEX 添加数据库索引
-
----
-
-## Phase 6: 质量保障
-
-**Goal:** 引入测试框架，统一错误处理
+**Goal:** 实现书籍详情页，优化导航结构，完善上传入口体验
 
 ### Requirements
 
-- QUALITY-01: 引入Vitest测试框架
-- QUALITY-02: 编写后端API单元测试
-- QUALITY-03: 统一错误处理中间件应用到所有路由
-- QUALITY-04: 统一API响应格式
-- QUALITY-05: 添加请求日志记录
+- DETAILS-01: 用户可从书籍卡片进入书籍详情页
+- DETAILS-02: 详情页显示书籍完整元数据（标题、作者、分类、标签、上传时间）
+- DETAILS-03: 详情页显示阅读进度和时间
+- DETAILS-04: 详情页提供"开始阅读"或"继续阅读"按钮
+- DETAILS-05: 详情页可以编辑书籍信息（分类、标签）
+- UPLOAD-01: 上传功能从首页移至独立页面或导航入口
+- UPLOAD-02: 上传成功后显示书籍预览并可立即开始阅读
+- UPLOAD-03: 导航栏清晰展示：书库、上传、管理
 
 ### Success Criteria
 
-1. 运行 npm test 执行所有测试
-2. 后端核心API测试覆盖率>80%
-3. 所有路由使用统一错误处理
-4. API响应格式一致 {data, error, message}
-5. 请求日志记录到文件
+1. 点击书籍卡片可进入详情页 /book/:id
+2. 详情页显示完整书籍信息和阅读进度
+3. 详情页有开始/继续阅读按钮
+4. 详情页可编辑分类和标签
+5. 导航栏清晰展示：书库、上传、管理
+6. 上传成功后显示预览并可立即阅读
 
 ### Technical Notes
 
-- 使用 Vitest + supertest 测试API
-- 使用 morgan 记录请求日志
-- 错误处理中间件已存在于 middleware/errorHandler.ts
+- 创建 BookDetail.vue 详情页
+- 创建 NavBar.vue 导航组件
+- 修改 Upload.vue 为独立页面 /upload
+- 上传成功后跳转到详情页或直接打开阅读器
+- 使用现有 API: GET /api/books/:id, PUT /api/books/:id
 
 ---
 
 ## Requirement Coverage
 
-| Category | Total | Phase 4 | Phase 5 | Phase 6 |
-|----------|-------|---------|---------|---------|
-| SECURITY | 7 | 7 | - | - |
-| FEATURES | 6 | - | 6 | - |
-| QUALITY | 5 | - | - | 5 |
-| **Total** | **18** | **7** | **6** | **5** |
+| Category | Total | Phase 7 | Phase 8 |
+|----------|-------|---------|---------|
+| LIBRARY | 6 | 6 | - |
+| READER | 4 | 4 | - |
+| DETAILS | 5 | - | 5 |
+| UPLOAD | 3 | - | 3 |
+| **Total** | **18** | **10** | **8** |
 
 ✅ 100% requirement coverage
+
+---
+
+## Build Order
+
+Phase 7 → Phase 8
+
+Phase 7 必须先完成，因为它建立了书库首页和阅读入口的基础架构。
+Phase 8 在此基础上添加详情页和导航优化。
 
 ---
 

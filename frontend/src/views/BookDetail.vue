@@ -106,6 +106,23 @@
               placeholder="多个标签用逗号分隔"
             />
           </div>
+          <div class="form-group">
+            <label>收藏夹</label>
+            <div class="collection-list">
+              <button
+                v-for="col in collections"
+                :key="col.id"
+                type="button"
+                :class="['collection-chip', { active: bookCollections.has(col.id) }]"
+                :style="{ borderColor: col.color || 'var(--border-light)' }"
+                @click="toggleCollection(col.id)"
+              >
+                <span class="chip-icon">{{ col.icon || '📁' }}</span>
+                <span class="chip-name">{{ col.name }}</span>
+              </button>
+            </div>
+            <p class="collection-hint">点击添加或移除收藏夹</p>
+          </div>
           <button
             @click="saveEdit"
             :disabled="saving"
@@ -126,6 +143,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { getBook, getCategories, updateBook, type Book, type Category } from '../api/books';
+import { getCollections, addBookToCollection, removeBookFromCollection, type Collection } from '../api/collections';
 import { getProgress, type ReadingProgress } from '../api/reading';
 
 const route = useRoute();
@@ -134,6 +152,8 @@ const bookId = computed(() => Number(route.params.id));
 const book = ref<Book | null>(null);
 const progress = ref<ReadingProgress | null>(null);
 const categories = ref<Category[]>([]);
+const collections = ref<Collection[]>([]);
+const bookCollections = ref<Set<number>>(new Set());
 const loading = ref(true);
 const error = ref('');
 
@@ -171,15 +191,17 @@ async function loadBook() {
     loading.value = true;
     error.value = '';
 
-    const [bookData, progressData, categoriesData] = await Promise.all([
+    const [bookData, progressData, categoriesData, collectionsData] = await Promise.all([
       getBook(bookId.value),
       getProgress(bookId.value).catch(() => null),
-      getCategories()
+      getCategories(),
+      getCollections()
     ]);
 
     book.value = bookData;
     progress.value = progressData;
     categories.value = categoriesData;
+    collections.value = collectionsData;
 
     editForm.value = {
       category: bookData.category || '',
@@ -189,6 +211,25 @@ async function loadBook() {
     error.value = err.response?.data?.error || '加载失败';
   } finally {
     loading.value = false;
+  }
+}
+
+async function toggleCollection(collectionId: number) {
+  if (!book.value) return;
+  try {
+    const isCurrentlyInCollection = bookCollections.value.has(collectionId);
+    if (isCurrentlyInCollection) {
+      await removeBookFromCollection(collectionId, book.value.id);
+      bookCollections.value.delete(collectionId);
+    } else {
+      await addBookToCollection(collectionId, book.value.id);
+      bookCollections.value.add(collectionId);
+    }
+    // Refresh collections to update book_count
+    const collectionsData = await getCollections();
+    collections.value = collectionsData;
+  } catch (error) {
+    console.error('Failed to toggle collection:', error);
   }
 }
 
@@ -497,6 +538,48 @@ onMounted(() => {
 .save-message.error {
   color: var(--color-error);
   background: var(--color-error-light);
+}
+
+.collection-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.collection-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-full);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-sm);
+}
+
+.collection-chip:hover {
+  background: var(--bg-tertiary);
+}
+
+.collection-chip.active {
+  background: var(--color-primary-100);
+  border-color: var(--color-primary-500);
+}
+
+.chip-icon {
+  font-size: var(--font-size-base);
+}
+
+.chip-name {
+  color: var(--text-primary);
+}
+
+.collection-hint {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  margin-top: var(--spacing-2);
 }
 
 @media (max-width: 600px) {

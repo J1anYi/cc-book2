@@ -17,11 +17,17 @@
         <span class="link-icon">⚙️</span>
         <span>管理</span>
       </router-link>
+      <button class="theme-toggle" @click="cycleTheme()" :title="getThemeLabel()">
+        <span class="theme-icon">{{ getThemeIcon() }}</span>
+      </button>
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
+import { useTheme } from '../composables/useTheme';
+
+const { cycleTheme, getThemeIcon, getThemeLabel } = useTheme();
 </script>
 
 <style scoped>
@@ -61,6 +67,7 @@
 .nav-links {
   display: flex;
   gap: var(--spacing-1);
+  align-items: center;
 }
 
 .nav-link {
@@ -92,6 +99,30 @@
   box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1);
 }
 
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin-left: var(--spacing-2);
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+.theme-icon {
+  font-size: var(--font-size-lg);
+}
+
 @media (max-width: 640px) {
   .navbar {
     padding: var(--spacing-2) var(--spacing-4);
@@ -107,6 +138,12 @@
 
   .nav-link span:not(.link-icon) {
     display: none;
+  }
+
+  .theme-toggle {
+    width: 32px;
+    height: 32px;
+    margin-left: var(--spacing-1);
   }
 }
 </style>

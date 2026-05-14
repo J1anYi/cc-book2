@@ -181,3 +181,39 @@
   --container-xl: 1280px;
   --container-2xl: 1536px;
 }
+
+/* ============================================
+ * Dark Theme - 深色主题
+ * ============================================ */
+
+[data-theme="dark"] {
+  /* Background Colors */
+  --bg-primary: #1E293B;
+  --bg-secondary: #0F172A;
+  --bg-tertiary: #334155;
+  --bg-elevated: #1E293B;
+
+  /* Text Colors */
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-tertiary: #64748B;
+  --text-inverse: #0F172A;
+
+  /* Border Colors */
+  --border-light: #334155;
+  --border-default: #475569;
+  --border-dark: #64748B;
+
+  /* Semantic Colors - 深色模式调整 */
+  --color-success-light: #065F46;
+  --color-warning-light: #92400E;
+  --color-error-light: #991B1B;
+  --color-info-light: #1E40AF;
+
+  /* Shadows - 深色模式阴影 */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+}

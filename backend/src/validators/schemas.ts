@@ -60,6 +60,12 @@ export const idParamSchema = z.object({
   id: z.coerce.number().int().positive(),
 });
 
+// Collection book params schema (for routes with :id and :bookId)
+export const collectionBookParamsSchema = z.object({
+  id: z.coerce.number().int().positive(),
+  bookId: z.coerce.number().int().positive(),
+});
+
 // Type exports
 export type BookInput = z.infer<typeof bookSchema>;
 export type CategoryInput = z.infer<typeof categorySchema>;

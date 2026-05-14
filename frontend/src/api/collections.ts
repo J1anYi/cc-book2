@@ -57,3 +57,8 @@ export async function addBookToCollection(collectionId: number, bookId: number):
 export async function removeBookFromCollection(collectionId: number, bookId: number): Promise<void> {
   await api.delete(`/collections/${collectionId}/books/${bookId}`);
 }
+
+export async function getBookCollections(bookId: number): Promise<number[]> {
+  const response = await api.get(`/collections/book/${bookId}`);
+  return response.data;
+}

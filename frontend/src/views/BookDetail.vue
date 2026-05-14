@@ -143,7 +143,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { getBook, getCategories, updateBook, type Book, type Category } from '../api/books';
-import { getCollections, addBookToCollection, removeBookFromCollection, type Collection } from '../api/collections';
+import { getCollections, addBookToCollection, removeBookFromCollection, getBookCollections, type Collection } from '../api/collections';
 import { getProgress, type ReadingProgress } from '../api/reading';
 
 const route = useRoute();
@@ -191,17 +191,19 @@ async function loadBook() {
     loading.value = true;
     error.value = '';
 
-    const [bookData, progressData, categoriesData, collectionsData] = await Promise.all([
+    const [bookData, progressData, categoriesData, collectionsData, bookCollectionIds] = await Promise.all([
       getBook(bookId.value),
       getProgress(bookId.value).catch(() => null),
       getCategories(),
-      getCollections()
+      getCollections(),
+      getBookCollections(bookId.value).catch(() => [])
     ]);
 
     book.value = bookData;
     progress.value = progressData;
     categories.value = categoriesData;
     collections.value = collectionsData;
+    bookCollections.value = new Set(bookCollectionIds);
 
     editForm.value = {
       category: bookData.category || '',

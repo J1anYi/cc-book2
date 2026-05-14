@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { db } from '../models/book.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { validateBody, validateParams } from '../middleware/validate.js';
-import { collectionSchema, idParamSchema } from '../validators/schemas.js';
+import { collectionSchema, idParamSchema, collectionBookParamsSchema } from '../validators/schemas.js';
 
 const router = Router();
 
@@ -52,7 +52,7 @@ router.post('/', authMiddleware, validateBody(collectionSchema), (req, res) => {
 });
 
 // PUT /api/collections/:id - Update collection
-router.put('/:id', authMiddleware, validateParams(idParamSchema), (req, res) => {
+router.put('/:id', authMiddleware, validateParams(idParamSchema), validateBody(collectionSchema), (req, res) => {
   try {
     const { id } = req.params as any;
     const { name, description, icon, color } = req.body;
@@ -108,7 +108,7 @@ router.delete('/:id', authMiddleware, validateParams(idParamSchema), (req, res) 
 });
 
 // POST /api/collections/:id/books/:bookId - Add book to collection
-router.post('/:id/books/:bookId', authMiddleware, validateParams(idParamSchema), (req, res) => {
+router.post('/:id/books/:bookId', authMiddleware, validateParams(collectionBookParamsSchema), (req, res) => {
   try {
     const { id, bookId } = req.params as any;
     const database = db();
@@ -145,7 +145,7 @@ router.post('/:id/books/:bookId', authMiddleware, validateParams(idParamSchema),
 });
 
 // DELETE /api/collections/:id/books/:bookId - Remove book from collection
-router.delete('/:id/books/:bookId', authMiddleware, validateParams(idParamSchema), (req, res) => {
+router.delete('/:id/books/:bookId', authMiddleware, validateParams(collectionBookParamsSchema), (req, res) => {
   try {
     const { id, bookId } = req.params as any;
     const database = db();
@@ -159,6 +159,24 @@ router.delete('/:id/books/:bookId', authMiddleware, validateParams(idParamSchema
   } catch (error) {
     console.error('Failed to remove book from collection:', error);
     res.status(500).json({ error: '从收藏夹移除失败' });
+  }
+});
+
+// GET /api/collections/book/:bookId - Get collections for a specific book
+router.get('/book/:bookId', (req, res) => {
+  try {
+    const { bookId } = req.params as any;
+    const database = db();
+
+    const collectionIds = database.all(
+      'SELECT collection_id FROM book_collections WHERE book_id = ?',
+      [bookId]
+    );
+
+    res.json(collectionIds.map((row: any) => row.collection_id));
+  } catch (error) {
+    console.error('Failed to get book collections:', error);
+    res.status(500).json({ error: '获取书籍收藏夹失败' });
   }
 });
 

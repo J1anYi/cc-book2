@@ -19,6 +19,14 @@
           </option>
         </select>
       </div>
+      <div class="filter-box">
+        <select v-model="selectedCollection" @change="handleCollectionChange">
+          <option :value="null">全部收藏夹</option>
+          <option v-for="col in collections" :key="col.id" :value="col.id">
+            {{ col.icon || '📁' }} {{ col.name }} ({{ col.book_count }})
+          </option>
+        </select>
+      </div>
     </div>
 
     <!-- Continue Reading Section -->
@@ -82,15 +90,18 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import BookCard from '../components/BookCard.vue';
 import { getBooks, getCategories, type Book, type Category } from '../api/books';
+import { getCollections, type Collection } from '../api/collections';
 import { getReadingHistory } from '../api/reading';
 
 const router = useRouter();
 
 const books = ref<Book[]>([]);
 const categories = ref<Category[]>([]);
+const collections = ref<Collection[]>([]);
 const readingHistory = ref<any[]>([]);
 const searchQuery = ref('');
 const selectedCategory = ref('');
+const selectedCollection = ref<number | null>(null);
 
 const recentBooks = computed(() => {
   return readingHistory.value
@@ -141,16 +152,32 @@ function goToReader(bookId: number) {
 
 async function loadData() {
   try {
-    const [booksData, categoriesData, historyData] = await Promise.all([
+    const [booksData, categoriesData, collectionsData, historyData] = await Promise.all([
       getBooks(),
       getCategories(),
+      getCollections(),
       getReadingHistory()
     ]);
     books.value = booksData;
     categories.value = categoriesData;
+    collections.value = collectionsData;
     readingHistory.value = historyData;
   } catch (error) {
     console.error('Failed to load library data:', error);
+  }
+}
+
+async function handleCollectionChange() {
+  try {
+    if (selectedCollection.value) {
+      const booksData = await getBooks(undefined, selectedCollection.value);
+      books.value = booksData;
+    } else {
+      const booksData = await getBooks();
+      books.value = booksData;
+    }
+  } catch (error) {
+    console.error('Failed to filter by collection:', error);
   }
 }
 

@@ -3,6 +3,7 @@
     <!-- Search and Filter -->
     <div class="library-header">
       <div class="search-box">
+        <span class="search-icon">🔍</span>
         <input
           v-model="searchQuery"
           type="text"
@@ -22,7 +23,10 @@
 
     <!-- Continue Reading Section -->
     <section v-if="recentBooks.length > 0" class="continue-reading">
-      <h2>继续阅读</h2>
+      <h2>
+        <span class="section-icon">📖</span>
+        继续阅读
+      </h2>
       <div class="recent-scroll">
         <div
           v-for="item in recentBooks"
@@ -49,10 +53,17 @@
 
     <!-- Book Library Grid -->
     <section class="book-grid-section">
-      <h2>书库</h2>
+      <h2>
+        <span class="section-icon">📚</span>
+        书库
+      </h2>
       <div v-if="filteredBooks.length === 0" class="empty-state">
+        <span class="empty-icon">📭</span>
         <p>暂无书籍</p>
-        <router-link to="/upload" class="upload-link">去上传</router-link>
+        <router-link to="/upload" class="upload-link">
+          <span>📤</span>
+          去上传
+        </router-link>
       </div>
       <div v-else class="book-grid">
         <BookCard
@@ -82,7 +93,6 @@ const searchQuery = ref('');
 const selectedCategory = ref('');
 
 const recentBooks = computed(() => {
-  // Get books with reading progress, sorted by last_read_at
   return readingHistory.value
     .filter(h => h.progress_percent > 0)
     .sort((a, b) => new Date(b.last_read_at).getTime() - new Date(a.last_read_at).getTime())
@@ -92,7 +102,6 @@ const recentBooks = computed(() => {
 const filteredBooks = computed(() => {
   let result = books.value;
 
-  // Filter by search query
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
     result = result.filter(book =>
@@ -101,7 +110,6 @@ const filteredBooks = computed(() => {
     );
   }
 
-  // Filter by category
   if (selectedCategory.value) {
     result = result.filter(book => book.category === selectedCategory.value);
   }
@@ -153,168 +161,247 @@ onMounted(() => {
 
 <style scoped>
 .library {
-  max-width: 1200px;
+  max-width: var(--container-xl);
   margin: 0 auto;
-  padding: 20px;
 }
 
 .library-header {
   display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-8);
 }
 
 .search-box {
   flex: 1;
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--spacing-4);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-size-lg);
+  pointer-events: none;
 }
 
 .search-box input {
   width: 100%;
-  padding: 12px 16px;
-  font-size: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  transition: border-color 0.2s;
+  padding: var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-10);
+  font-size: var(--font-size-base);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
 }
 
 .search-box input:focus {
   outline: none;
-  border-color: #42b883;
+  border-color: var(--color-primary-500);
+  box-shadow: var(--shadow-md), 0 0 0 4px var(--color-primary-100);
+}
+
+.search-box input::placeholder {
+  color: var(--text-tertiary);
 }
 
 .filter-box select {
-  padding: 12px 16px;
-  font-size: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-base);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  min-width: 140px;
+}
+
+.filter-box select:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: var(--shadow-md);
 }
 
 /* Continue Reading Section */
 .continue-reading {
-  margin-bottom: 40px;
+  margin-bottom: var(--spacing-10);
 }
 
-.continue-reading h2 {
-  margin-bottom: 15px;
-  color: #333;
+.continue-reading h2,
+.book-grid-section h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.section-icon {
+  font-size: var(--font-size-2xl);
 }
 
 .recent-scroll {
   display: flex;
-  gap: 15px;
+  gap: var(--spacing-4);
   overflow-x: auto;
-  padding-bottom: 10px;
+  padding-bottom: var(--spacing-2);
+  margin: 0 calc(-1 * var(--spacing-6));
+  padding-left: var(--spacing-6);
+  padding-right: var(--spacing-6);
 }
 
 .recent-item {
   display: flex;
-  gap: 12px;
-  min-width: 280px;
-  padding: 15px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  gap: var(--spacing-3);
+  min-width: 300px;
+  padding: var(--spacing-4);
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all var(--transition-normal);
+  border: 1px solid var(--border-light);
 }
 
 .recent-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary-200);
 }
 
 .recent-cover {
-  width: 60px;
+  width: 64px;
   height: 80px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary-400) 0%, var(--color-secondary-400) 100%);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .file-icon {
-  font-size: 24px;
+  font-size: var(--font-size-2xl);
 }
 
 .recent-info {
   flex: 1;
+  min-width: 0;
 }
 
 .recent-info h4 {
-  margin: 0 0 5px 0;
-  font-size: 14px;
-  color: #333;
+  margin: 0 0 var(--spacing-1) 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .recent-info p {
-  margin: 0 0 8px 0;
-  font-size: 12px;
-  color: #666;
+  margin: 0 0 var(--spacing-2) 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
 }
 
 .recent-progress {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-2);
 }
 
 .recent-progress .progress-bar {
   flex: 1;
   height: 6px;
-  background: #e0e0e0;
-  border-radius: 3px;
+  background: var(--color-neutral-100);
+  border-radius: var(--radius-full);
   overflow: hidden;
 }
 
 .recent-progress .progress-fill {
   height: 100%;
-  background: #42b883;
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-500));
 }
 
 .recent-progress span {
-  font-size: 12px;
-  color: #666;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
 }
 
 /* Book Grid Section */
-.book-grid-section h2 {
-  margin-bottom: 20px;
-  color: #333;
+.book-grid-section {
+  margin-top: var(--spacing-8);
 }
 
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
-  background: white;
-  border-radius: 12px;
+  padding: var(--spacing-16) var(--spacing-4);
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-icon {
+  font-size: 64px;
+  display: block;
+  margin-bottom: var(--spacing-4);
 }
 
 .empty-state p {
-  font-size: 18px;
-  color: #666;
-  margin-bottom: 20px;
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-6);
 }
 
 .upload-link {
-  display: inline-block;
-  padding: 12px 24px;
-  background: #42b883;
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-6);
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--text-inverse);
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 500;
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-md);
 }
 
 .upload-link:hover {
-  background: #3aa876;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--spacing-6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .library-header {
+    flex-direction: column;
+  }
+
+  .book-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--spacing-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .book-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-3);
+  }
 }
 </style>

@@ -1,6 +1,8 @@
 <template>
   <div class="book-card" @click="goToReader">
-    <button class="detail-btn" @click.stop="goToDetail" title="查看详情">ℹ️</button>
+    <button class="detail-btn" @click.stop="goToDetail" title="查看详情">
+      <span>ℹ️</span>
+    </button>
     <div class="card-cover">
       <img
         v-if="book.cover_path"
@@ -16,11 +18,13 @@
       <h3 class="card-title">{{ book.title }}</h3>
       <p class="card-author">{{ book.author || '未知作者' }}</p>
       <div class="card-meta">
-        <span class="file-type">{{ book.file_type.toUpperCase() }}</span>
-        <span v-if="book.category" class="category">{{ book.category }}</span>
+        <span class="file-type-tag">{{ book.file_type.toUpperCase() }}</span>
+        <span v-if="book.category" class="category-tag">{{ book.category }}</span>
       </div>
-      <div v-if="progress > 0" class="progress-bar">
-        <div class="progress-fill" :style="{ width: `${progress}%` }"></div>
+      <div v-if="progress > 0" class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" :style="{ width: `${progress}%` }"></div>
+        </div>
         <span class="progress-text">{{ Math.round(progress) }}%</span>
       </div>
     </div>
@@ -53,7 +57,6 @@ const fileTypeIcon = computed(() => {
 
 function getCoverUrl(coverPath: string | null): string {
   if (!coverPath) return '';
-  // Assuming covers are served from /api/files/covers/
   return `/api/files/covers/${coverPath}`;
 }
 
@@ -69,53 +72,62 @@ function goToDetail() {
 <style scoped>
 .book-card {
   position: relative;
-  background: white;
-  border-radius: 12px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 .book-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-xl);
 }
 
 .detail-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 28px;
-  height: 28px;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  width: 32px;
+  height: 32px;
   border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
   cursor: pointer;
-  font-size: 14px;
   z-index: 10;
-  transition: background 0.2s;
+  transition: all var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--shadow-sm);
 }
 
 .detail-btn:hover {
-  background: white;
+  background: var(--bg-primary);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-md);
 }
 
 .card-cover {
-  height: 180px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  height: 200px;
+  background: linear-gradient(135deg, var(--color-primary-400) 0%, var(--color-secondary-400) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .cover-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.book-card:hover .cover-image {
+  transform: scale(1.05);
 }
 
 .cover-placeholder {
@@ -125,28 +137,28 @@ function goToDetail() {
 }
 
 .file-type-icon {
-  font-size: 48px;
-  color: white;
+  font-size: 56px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
 .card-content {
-  padding: 15px;
+  padding: var(--spacing-4);
 }
 
 .card-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 5px 0;
-  color: #333;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--spacing-1) 0;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .card-author {
-  font-size: 14px;
-  color: #666;
-  margin: 0 0 10px 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-3) 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -154,48 +166,55 @@ function goToDetail() {
 
 .card-meta {
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
+  flex-wrap: wrap;
 }
 
-.file-type {
-  font-size: 12px;
-  padding: 2px 8px;
-  background: #f0f0f0;
-  border-radius: 4px;
-  color: #666;
+.file-type-tag {
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-1) var(--spacing-2);
+  background: var(--color-neutral-100);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
 }
 
-.category {
-  font-size: 12px;
-  padding: 2px 8px;
-  background: #42b883;
-  border-radius: 4px;
-  color: white;
+.category-tag {
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-1) var(--spacing-2);
+  background: var(--color-primary-100);
+  color: var(--color-primary-700);
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
 }
 
 .progress-bar {
-  height: 20px;
-  background: #f0f0f0;
-  border-radius: 10px;
-  position: relative;
+  flex: 1;
+  height: 8px;
+  background: var(--color-neutral-100);
+  border-radius: var(--radius-full);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #42b883, #35495e);
-  border-radius: 10px;
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-500));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-slow);
 }
 
 .progress-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 12px;
-  color: #333;
-  font-weight: 500;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  min-width: 32px;
+  text-align: right;
 }
 </style>

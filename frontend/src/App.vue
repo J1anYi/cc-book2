@@ -1,9 +1,9 @@
 <template>
   <div class="app">
-    <header>
+    <header class="app-header">
       <NavBar />
     </header>
-    <main>
+    <main class="app-main">
       <router-view />
     </main>
   </div>
@@ -13,30 +13,27 @@
 import NavBar from './components/NavBar.vue';
 </script>
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f5f5f5;
-}
-
+<style scoped>
 .app {
-  max-width: 1200px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.app-main {
+  flex: 1;
+  max-width: var(--container-xl);
+  width: 100%;
   margin: 0 auto;
-  padding: 20px;
-}
-
-header {
-  text-align: center;
-  padding: 20px 0;
-}
-
-header h1 {
-  color: #333;
+  padding: var(--spacing-6);
 }
 </style>

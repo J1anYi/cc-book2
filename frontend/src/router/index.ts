@@ -43,7 +43,7 @@ const router = createRouter({
 });
 
 // Route guard for authentication (no longer blocking, Admin handles its own auth)
-router.beforeEach((to, _from, next) => {
+router.beforeEach((_to, _from, next) => {
   next();
 });
 

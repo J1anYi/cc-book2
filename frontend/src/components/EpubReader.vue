@@ -42,8 +42,8 @@ onMounted(async () => {
     await book.value.ready;
 
     // Get spine items count (chapters)
-    const spine = book.value.spine;
-    totalChapters.value = spine ? spine.length : 0;
+    const spine = book.value.spine as any;
+    totalChapters.value = spine?.spineItems?.length || 0;
 
     rendition.value = book.value.renderTo(bookContainer.value!, {
       width: '100%',

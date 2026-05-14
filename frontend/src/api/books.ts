@@ -44,8 +44,10 @@ export async function uploadBook(file: File): Promise<Book> {
   return response.data;
 }
 
-export async function getBooks(search?: string): Promise<Book[]> {
-  const params = search ? { search } : {};
+export async function getBooks(search?: string, collectionId?: number): Promise<Book[]> {
+  const params: any = {};
+  if (search) params.search = search;
+  if (collectionId) params.collection_id = collectionId;
   const response = await api.get('/books', { params });
   return response.data.data || response.data;
 }

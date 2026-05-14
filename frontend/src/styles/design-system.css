@@ -71,6 +71,12 @@
   --border-default: #CBD5E1;
   --border-dark: #94A3B8;
 
+  /* Navbar Colors - 导航栏颜色 */
+  --navbar-bg: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  --navbar-text: var(--text-inverse);
+  --navbar-link-color: rgba(255, 255, 255, 0.85);
+  --navbar-link-bg: rgba(255, 255, 255, 0.15);
+
   /* ============================================
    * Typography - 字体系统
    * ============================================ */
@@ -227,12 +233,4 @@
   --navbar-text: #F8FAFC;
   --navbar-link-color: rgba(248, 250, 252, 0.85);
   --navbar-link-bg: rgba(248, 250, 252, 0.15);
-}
-
-/* Light theme navbar defaults */
-:root {
-  --navbar-bg: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
-  --navbar-text: var(--text-inverse);
-  --navbar-link-color: rgba(255, 255, 255, 0.85);
-  --navbar-link-bg: rgba(255, 255, 255, 0.15);
 }

@@ -20,9 +20,11 @@
 
 ---
 
-## Phase 14: 收藏夹系统
+## Phase 14: 收藏夹系统 ✓ COMPLETE
 
 **Goal:** 实现多收藏夹管理，支持书籍归属多个收藏夹
+**Status:** ✅ Complete (2026-05-14)
+**Plans:** 14-01 (Backend), 14-02 (Frontend)
 
 ### Requirements
 

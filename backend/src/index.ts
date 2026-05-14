@@ -8,6 +8,7 @@ import adminRouter from './routes/admin.js';
 import categoriesRouter from './routes/categories.js';
 import readingRouter from './routes/reading.js';
 import filesRouter from './routes/files.js';
+import highlightsRouter from './routes/highlights.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -52,6 +53,7 @@ app.use('/api/admin', adminRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/reading', readingRouter);
 app.use('/api/files', filesRouter);
+app.use('/api/highlights', highlightsRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

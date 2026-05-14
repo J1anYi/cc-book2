@@ -135,6 +135,21 @@ async function initDatabase(): Promise<SQLiteDatabase> {
     )
   `);
 
+  // Highlights table for EPUB text highlighting
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS highlights (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      book_id INTEGER NOT NULL,
+      cfi_range TEXT NOT NULL,
+      selected_text TEXT NOT NULL,
+      color TEXT NOT NULL DEFAULT 'yellow',
+      note TEXT,
+      chapter TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+    )
+  `);
+
   // Create indexes
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_title ON books(title)`);
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_author ON books(author)`);

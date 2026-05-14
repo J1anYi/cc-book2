@@ -67,22 +67,56 @@ router.post('/', upload.single('book'), async (req, res) => {
 });
 
 router.get('/', validateQuery(bookQuerySchema), (req, res) => {
-  const { page = 1, limit = 20, search } = req.query as any;
+  const { page = 1, limit = 20, search, collection_id } = req.query as any;
   const offset = (page - 1) * limit;
   const database = db();
 
-  let sql = 'SELECT * FROM books';
+  let sql = 'SELECT DISTINCT b.* FROM books b';
   const params: any[] = [];
+  const conditions: string[] = [];
+
+  if (collection_id) {
+    sql += ' JOIN book_collections bc ON b.id = bc.book_id';
+    conditions.push('bc.collection_id = ?');
+    params.push(collection_id);
+  }
 
   if (search) {
-    sql += ' WHERE title LIKE ? OR author LIKE ?';
+    conditions.push('(b.title LIKE ? OR b.author LIKE ?)');
     params.push(`%${search}%`, `%${search}%`);
   }
-  sql += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+
+  if (conditions.length > 0) {
+    sql += ' WHERE ' + conditions.join(' AND ');
+  }
+
+  sql += ' ORDER BY b.created_at DESC LIMIT ? OFFSET ?';
   params.push(limit, offset);
 
   const books = database.all(sql, params);
-  const totalResult = database.get('SELECT COUNT(*) as total FROM books') as { total: number };
+
+  // Count query with same filters
+  let countSql = 'SELECT COUNT(DISTINCT b.id) as total FROM books b';
+  const countParams: any[] = [];
+
+  if (collection_id) {
+    countSql += ' JOIN book_collections bc ON b.id = bc.book_id';
+    countParams.push(collection_id);
+  }
+
+  if (search) {
+    const searchCondition = '(b.title LIKE ? OR b.author LIKE ?)';
+    if (collection_id) {
+      countSql += ' WHERE bc.collection_id = ? AND ' + searchCondition;
+    } else {
+      countSql += ' WHERE ' + searchCondition;
+    }
+    countParams.push(`%${search}%`, `%${search}%`);
+  } else if (collection_id) {
+    countSql += ' WHERE bc.collection_id = ?';
+  }
+
+  const totalResult = database.get(countSql, countParams) as { total: number };
   const totalPages = Math.ceil(totalResult.total / limit);
 
   res.json({ data: books, pagination: { page, limit, total: totalResult.total, totalPages, hasMore: page < totalPages } });

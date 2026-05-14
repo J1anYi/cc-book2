@@ -2,7 +2,10 @@
   <div class="admin">
     <!-- Login Form -->
     <div v-if="!isLoggedIn" class="login-form">
-      <h2>管理员登录</h2>
+      <div class="login-header">
+        <span class="login-icon">🔐</span>
+        <h2>管理员登录</h2>
+      </div>
       <form @submit.prevent="handleLogin">
         <input
           v-model="password"
@@ -18,14 +21,24 @@
     <!-- Admin Panel -->
     <div v-else class="admin-panel">
       <div class="tabs">
-        <button :class="{ active: activeTab === 'books' }" @click="activeTab = 'books'">书库管理</button>
-        <button :class="{ active: activeTab === 'categories' }" @click="activeTab = 'categories'">分类管理</button>
-        <button class="logout" @click="handleLogout">退出</button>
+        <button :class="{ active: activeTab === 'books' }" @click="activeTab = 'books'">
+          <span class="tab-icon">📚</span>
+          书库管理
+        </button>
+        <button :class="{ active: activeTab === 'categories' }" @click="activeTab = 'categories'">
+          <span class="tab-icon">🏷️</span>
+          分类管理
+        </button>
+        <button class="logout" @click="handleLogout">
+          <span class="tab-icon">🚪</span>
+          退出
+        </button>
       </div>
 
       <!-- Books Management -->
       <div v-if="activeTab === 'books'" class="books-management">
         <div class="search-bar">
+          <span class="search-icon">🔍</span>
           <input
             v-model="searchQuery"
             placeholder="搜索书籍标题或作者..."
@@ -43,14 +56,14 @@
               <p>标签: {{ book.tags || '无' }}</p>
             </div>
             <div class="book-actions">
-              <button @click="editBook(book)">编辑</button>
-              <button class="delete" @click="handleDeleteBook(book.id)">删除</button>
+              <button class="edit-btn" @click="editBook(book)">编辑</button>
+              <button class="delete-btn" @click="handleDeleteBook(book.id)">删除</button>
             </div>
           </div>
         </div>
 
         <!-- Edit Modal -->
-        <div v-if="editingBook" class="modal">
+        <div v-if="editingBook" class="modal" @click.self="editingBook = null">
           <div class="modal-content">
             <h3>编辑书籍</h3>
             <div class="form-group">
@@ -67,8 +80,8 @@
               <input v-model="editForm.tags" placeholder="小说, 科幻" />
             </div>
             <div class="modal-actions">
-              <button @click="saveBook">保存</button>
-              <button @click="editingBook = null">取消</button>
+              <button class="save-btn" @click="saveBook">保存</button>
+              <button class="cancel-btn" @click="editingBook = null">取消</button>
             </div>
           </div>
         </div>
@@ -83,8 +96,8 @@
 
         <div class="categories-list">
           <div v-for="category in categories" :key="category.id" class="category-item">
-            <span>{{ category.name }}</span>
-            <button class="delete" @click="handleDeleteCategory(category.id)">删除</button>
+            <span class="category-name">{{ category.name }}</span>
+            <button class="delete-btn" @click="handleDeleteCategory(category.id)">删除</button>
           </div>
         </div>
       </div>
@@ -238,120 +251,215 @@ async function handleDeleteCategory(id: number) {
 
 <style scoped>
 .admin {
-  padding: 20px;
+  padding: var(--spacing-6);
 }
 
 .login-form {
   max-width: 400px;
-  margin: 50px auto;
-  padding: 30px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin: 80px auto;
+  padding: var(--spacing-8);
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: var(--spacing-6);
+}
+
+.login-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: var(--spacing-2);
 }
 
 .login-form h2 {
-  text-align: center;
-  margin-bottom: 20px;
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .login-form input {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: var(--spacing-3) var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  transition: all var(--transition-fast);
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 4px var(--color-primary-100);
 }
 
 .login-form button {
   width: 100%;
-  padding: 12px;
-  background: #42b883;
-  color: white;
+  padding: var(--spacing-3) var(--spacing-4);
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--text-inverse);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-lg);
   cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+}
+
+.login-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .error {
-  color: #e74c3c;
+  color: var(--color-error);
   text-align: center;
+  margin-top: var(--spacing-3);
 }
 
 .tabs {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-6);
+  padding-bottom: var(--spacing-3);
+  border-bottom: 2px solid var(--border-light);
 }
 
 .tabs button {
-  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
   border: none;
-  background: #f5f5f5;
+  background: var(--bg-tertiary);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.tab-icon {
+  font-size: var(--font-size-base);
+}
+
+.tabs button:hover {
+  background: var(--color-neutral-200);
 }
 
 .tabs button.active {
-  background: #42b883;
-  color: white;
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--text-inverse);
 }
 
 .tabs button.logout {
   margin-left: auto;
-  background: #e74c3c;
-  color: white;
+  background: var(--color-error);
+  color: var(--text-inverse);
+}
+
+.tabs button.logout:hover {
+  background: #dc2626;
 }
 
 .search-bar {
-  margin-bottom: 20px;
+  position: relative;
+  margin-bottom: var(--spacing-6);
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--spacing-4);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-size-lg);
 }
 
 .search-bar input {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-10);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  transition: all var(--transition-fast);
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 4px var(--color-primary-100);
 }
 
 .books-list {
   display: grid;
-  gap: 15px;
+  gap: var(--spacing-4);
 }
 
 .book-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  padding: var(--spacing-4);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  transition: all var(--transition-fast);
+}
+
+.book-item:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-200);
 }
 
 .book-info h3 {
-  margin: 0 0 5px 0;
+  margin: 0 0 var(--spacing-1) 0;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .book-info p {
-  margin: 3px 0;
-  color: #666;
-  font-size: 14px;
+  margin: var(--spacing-1) 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.book-actions {
+  display: flex;
+  gap: var(--spacing-2);
 }
 
 .book-actions button {
-  margin-left: 10px;
-  padding: 8px 16px;
+  padding: var(--spacing-2) var(--spacing-3);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
 }
 
-.book-actions button.delete {
-  background: #e74c3c;
-  color: white;
+.edit-btn {
+  background: var(--color-primary-100);
+  color: var(--color-primary-700);
+}
+
+.edit-btn:hover {
+  background: var(--color-primary-200);
+}
+
+.delete-btn {
+  background: var(--color-error-light);
+  color: var(--color-error);
+}
+
+.delete-btn:hover {
+  background: var(--color-error);
+  color: var(--text-inverse);
 }
 
 .modal {
@@ -360,85 +468,130 @@ async function handleDeleteCategory(id: number) {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: var(--z-modal);
 }
 
 .modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
+  background: var(--bg-primary);
+  padding: var(--spacing-6);
+  border-radius: var(--radius-xl);
   min-width: 400px;
+  box-shadow: var(--shadow-xl);
+}
+
+.modal-content h3 {
+  margin: 0 0 var(--spacing-4) 0;
+  color: var(--text-primary);
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-4);
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
 }
 
 .modal-actions {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-3);
   justify-content: flex-end;
+  margin-top: var(--spacing-4);
+}
+
+.modal-actions button {
+  padding: var(--spacing-2) var(--spacing-4);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.save-btn {
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--text-inverse);
+}
+
+.cancel-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
 }
 
 .add-category {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-6);
 }
 
 .add-category input {
   flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+}
+
+.add-category input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
 }
 
 .add-category button {
-  padding: 10px 20px;
-  background: #42b883;
-  color: white;
+  padding: var(--spacing-3) var(--spacing-5);
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--text-inverse);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-lg);
   cursor: pointer;
+  font-weight: var(--font-weight-medium);
 }
 
 .categories-list {
   display: grid;
-  gap: 10px;
+  gap: var(--spacing-3);
 }
 
 .category-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 15px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
 }
 
-.category-item button.delete {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
+.category-name {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.category-item button.delete-btn {
+  padding: var(--spacing-1) var(--spacing-3);
 }
 </style>

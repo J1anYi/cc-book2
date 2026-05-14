@@ -1,10 +1,16 @@
 <template>
   <div class="book-detail">
-    <div v-if="loading" class="loading">加载中...</div>
+    <div v-if="loading" class="loading">
+      <span class="loading-icon">⏳</span>
+      <p>加载中...</p>
+    </div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="book" class="detail-content">
       <!-- 返回按钮 -->
-      <router-link to="/" class="back-btn">← 返回书库</router-link>
+      <router-link to="/" class="back-btn">
+        <span>←</span>
+        返回书库
+      </router-link>
 
       <!-- 书籍信息 -->
       <div class="book-header">
@@ -23,25 +29,32 @@
           <h1 class="book-title">{{ book.title }}</h1>
           <p class="book-author">{{ book.author || '未知作者' }}</p>
           <div class="book-meta">
-            <span class="meta-item">
-              <strong>文件类型:</strong> {{ book.file_type.toUpperCase() }}
-            </span>
-            <span class="meta-item">
-              <strong>分类:</strong> {{ book.category || '未分类' }}
-            </span>
-            <span class="meta-item">
-              <strong>标签:</strong> {{ book.tags || '无' }}
-            </span>
-            <span class="meta-item">
-              <strong>上传时间:</strong> {{ formatDate(book.created_at) }}
-            </span>
+            <div class="meta-item">
+              <span class="meta-label">文件类型</span>
+              <span class="meta-value">{{ book.file_type.toUpperCase() }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">分类</span>
+              <span class="meta-value">{{ book.category || '未分类' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">标签</span>
+              <span class="meta-value">{{ book.tags || '无' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">上传时间</span>
+              <span class="meta-value">{{ formatDate(book.created_at) }}</span>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- 阅读进度 -->
       <div class="progress-section">
-        <h2>阅读进度</h2>
+        <h2>
+          <span class="section-icon">📊</span>
+          阅读进度
+        </h2>
         <div v-if="progress" class="progress-info">
           <div class="progress-bar">
             <div class="progress-fill" :style="{ width: `${progress.progress_percent}%` }"></div>
@@ -55,6 +68,7 @@
           </p>
         </div>
         <div v-else class="no-progress">
+          <span class="no-progress-icon">📖</span>
           <p>尚未开始阅读</p>
         </div>
       </div>
@@ -62,13 +76,17 @@
       <!-- 阅读按钮 -->
       <div class="action-buttons">
         <router-link :to="`/read/${book.id}`" class="btn btn-primary">
+          <span class="btn-icon">{{ progress && progress.progress_percent > 0 ? '📖' : '📚' }}</span>
           {{ progress && progress.progress_percent > 0 ? '继续阅读' : '开始阅读' }}
         </router-link>
       </div>
 
       <!-- 编辑信息 -->
       <div class="edit-section">
-        <h2>编辑信息</h2>
+        <h2>
+          <span class="section-icon">✏️</span>
+          编辑信息
+        </h2>
         <div class="edit-form">
           <div class="form-group">
             <label for="category">分类</label>
@@ -163,7 +181,6 @@ async function loadBook() {
     progress.value = progressData;
     categories.value = categoriesData;
 
-    // Initialize edit form
     editForm.value = {
       category: bookData.category || '',
       tags: bookData.tags || ''
@@ -207,48 +224,60 @@ onMounted(() => {
 .book-detail {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
 }
 
-.loading, .error {
+.loading {
   text-align: center;
-  padding: 40px;
-  font-size: 18px;
+  padding: var(--spacing-16);
+}
+
+.loading-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: var(--spacing-4);
 }
 
 .error {
-  color: #dc3545;
+  text-align: center;
+  padding: var(--spacing-8);
+  color: var(--color-error);
+  font-size: var(--font-size-lg);
 }
 
 .back-btn {
-  display: inline-block;
-  margin-bottom: 20px;
-  color: #42b883;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-6);
+  color: var(--color-primary-600);
   text-decoration: none;
-  font-size: 16px;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
 }
 
 .back-btn:hover {
-  text-decoration: underline;
+  color: var(--color-primary-700);
+  transform: translateX(-4px);
 }
 
 .book-header {
   display: flex;
-  gap: 30px;
-  margin-bottom: 30px;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  gap: var(--spacing-8);
+  margin-bottom: var(--spacing-8);
+  padding: var(--spacing-6);
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
 }
 
 .book-cover {
   flex-shrink: 0;
-  width: 150px;
-  height: 200px;
-  border-radius: 8px;
+  width: 160px;
+  height: 220px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary-400) 0%, var(--color-secondary-400) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -267,8 +296,8 @@ onMounted(() => {
 }
 
 .file-type-icon {
-  font-size: 48px;
-  color: white;
+  font-size: 56px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
 .book-info {
@@ -276,103 +305,142 @@ onMounted(() => {
 }
 
 .book-title {
-  font-size: 24px;
-  margin: 0 0 10px 0;
-  color: #333;
+  font-size: var(--font-size-2xl);
+  margin: 0 0 var(--spacing-2) 0;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-bold);
 }
 
 .book-author {
-  font-size: 16px;
-  color: #666;
-  margin: 0 0 15px 0;
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-4) 0;
 }
 
 .book-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
 }
 
 .meta-item {
-  font-size: 14px;
-  color: #555;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
 }
 
-.meta-item strong {
-  color: #333;
+.meta-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-weight: var(--font-weight-medium);
 }
 
-.progress-section, .edit-section {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+.meta-value {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
 }
 
-.progress-section h2, .edit-section h2 {
-  font-size: 18px;
-  margin: 0 0 15px 0;
-  color: #333;
+.progress-section,
+.edit-section {
+  background: var(--bg-primary);
+  padding: var(--spacing-6);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-6);
+}
+
+.progress-section h2,
+.edit-section h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-lg);
+  margin: 0 0 var(--spacing-4) 0;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.section-icon {
+  font-size: var(--font-size-xl);
 }
 
 .progress-bar {
-  height: 20px;
-  background: #f0f0f0;
-  border-radius: 10px;
+  height: 24px;
+  background: var(--color-neutral-100);
+  border-radius: var(--radius-full);
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: var(--spacing-3);
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #42b883, #35495e);
-  border-radius: 10px;
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-500));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-slow);
 }
 
-.progress-text, .last-read {
-  font-size: 14px;
-  color: #666;
-  margin: 5px 0;
+.progress-text,
+.last-read {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: var(--spacing-1) 0;
 }
 
 .no-progress {
-  color: #999;
+  text-align: center;
+  padding: var(--spacing-6);
+}
+
+.no-progress-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: var(--spacing-2);
+}
+
+.no-progress p {
+  color: var(--text-tertiary);
 }
 
 .action-buttons {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-6);
 }
 
 .btn {
-  display: inline-block;
-  padding: 12px 24px;
-  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--radius-lg);
   text-decoration: none;
-  font-weight: 500;
-  font-size: 16px;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-base);
   cursor: pointer;
   border: none;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon {
+  font-size: var(--font-size-lg);
 }
 
 .btn-primary {
-  background: #42b883;
-  color: white;
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-primary:hover {
-  background: #3aa876;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .btn-secondary {
-  background: #f0f0f0;
-  color: #333;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 .btn-secondary:hover {
-  background: #e0e0e0;
+  background: var(--color-neutral-200);
 }
 
 .btn-secondary:disabled {
@@ -383,46 +451,52 @@ onMounted(() => {
 .edit-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--spacing-4);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: var(--spacing-2);
 }
 
 .form-group label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
 }
 
 .form-group input,
 .form-group select {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: var(--spacing-3);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  transition: all var(--transition-fast);
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #42b883;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 4px var(--color-primary-100);
 }
 
 .save-message {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   margin: 0;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
 }
 
 .save-message.success {
-  color: #28a745;
+  color: var(--color-success);
+  background: var(--color-success-light);
 }
 
 .save-message.error {
-  color: #dc3545;
+  color: var(--color-error);
+  background: var(--color-error-light);
 }
 
 @media (max-width: 600px) {
@@ -433,6 +507,7 @@ onMounted(() => {
   }
 
   .book-meta {
+    grid-template-columns: 1fr;
     align-items: center;
   }
 }

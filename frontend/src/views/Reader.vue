@@ -1,11 +1,20 @@
 <template>
   <div class="reader-page">
     <div class="header">
-      <router-link to="/" class="back-btn">← 返回</router-link>
+      <router-link to="/" class="back-btn">
+        <span>←</span>
+        返回
+      </router-link>
       <h2>{{ book?.title || '加载中...' }}</h2>
       <div class="toolbar">
-        <button @click="showBookmarks = !showBookmarks">书签</button>
-        <button @click="showNotes = !showNotes">笔记</button>
+        <button @click="showBookmarks = !showBookmarks" :class="{ active: showBookmarks }">
+          <span>🔖</span>
+          书签
+        </button>
+        <button @click="showNotes = !showNotes" :class="{ active: showNotes }">
+          <span>📝</span>
+          笔记
+        </button>
       </div>
     </div>
 
@@ -32,29 +41,45 @@
 
     <!-- Bookmarks Panel -->
     <div v-if="showBookmarks" class="side-panel">
-      <h3>书签</h3>
-      <button @click="addBookmarkHandler">添加书签</button>
+      <div class="panel-header">
+        <h3>
+          <span>🔖</span>
+          书签
+        </h3>
+        <button class="close-btn" @click="showBookmarks = false">✕</button>
+      </div>
+      <button class="add-btn" @click="addBookmarkHandler">
+        <span>+</span>
+        添加书签
+      </button>
       <ul>
         <li v-for="bm in bookmarks" :key="bm.id">
-          第 {{ bm.page_number }} 页
-          <button @click="deleteBookmarkHandler(bm.id)">删除</button>
+          <span class="bookmark-page">第 {{ bm.page_number }} 页</span>
+          <button class="delete-btn" @click="deleteBookmarkHandler(bm.id)">删除</button>
         </li>
       </ul>
-      <button @click="showBookmarks = false">关闭</button>
     </div>
 
     <!-- Notes Panel -->
     <div v-if="showNotes" class="side-panel">
-      <h3>笔记</h3>
+      <div class="panel-header">
+        <h3>
+          <span>📝</span>
+          笔记
+        </h3>
+        <button class="close-btn" @click="showNotes = false">✕</button>
+      </div>
       <textarea v-model="newNote" placeholder="添加笔记..."></textarea>
-      <button @click="addNoteHandler">添加</button>
+      <button class="add-btn" @click="addNoteHandler">
+        <span>+</span>
+        添加
+      </button>
       <ul>
         <li v-for="note in notes" :key="note.id">
           <p>{{ note.content }}</p>
-          <button @click="deleteNoteHandler(note.id)">删除</button>
+          <button class="delete-btn" @click="deleteNoteHandler(note.id)">删除</button>
         </li>
       </ul>
-      <button @click="showNotes = false">关闭</button>
     </div>
   </div>
 </template>
@@ -139,25 +164,63 @@ async function deleteNoteHandler(id: number) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
-  background: #42b883;
-  color: white;
+  padding: var(--spacing-3) var(--spacing-6);
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-md);
 }
 
 .header h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 50%;
 }
 
 .back-btn {
-  color: white;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  color: var(--text-inverse);
   text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+}
+
+.back-btn:hover {
+  transform: translateX(-4px);
+}
+
+.toolbar {
+  display: flex;
+  gap: var(--spacing-2);
 }
 
 .toolbar button {
-  margin-left: 10px;
-  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-2) var(--spacing-3);
   cursor: pointer;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-inverse);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+}
+
+.toolbar button:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.toolbar button.active {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .reader-container {
@@ -169,37 +232,118 @@ async function deleteNoteHandler(id: number) {
   position: fixed;
   right: 0;
   top: 0;
-  width: 300px;
+  width: 320px;
   height: 100%;
-  background: white;
-  box-shadow: -2px 0 10px rgba(0,0,0,0.1);
-  padding: 20px;
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-6);
   overflow-y: auto;
+  z-index: var(--z-modal);
 }
 
-.side-panel h3 {
-  margin-top: 0;
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-4);
+}
+
+.panel-header h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--bg-tertiary);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  transition: all var(--transition-fast);
+}
+
+.close-btn:hover {
+  background: var(--color-neutral-200);
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-4);
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-4);
 }
 
 .side-panel ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .side-panel li {
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  padding: var(--spacing-3) 0;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bookmark-page {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+.side-panel li p {
+  flex: 1;
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+.delete-btn {
+  padding: var(--spacing-1) var(--spacing-2);
+  background: var(--color-error-light);
+  color: var(--color-error);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.delete-btn:hover {
+  background: var(--color-error);
+  color: var(--text-inverse);
 }
 
 .side-panel textarea {
   width: 100%;
-  height: 80px;
-  margin: 10px 0;
+  height: 100px;
+  margin: var(--spacing-3) 0;
+  padding: var(--spacing-3);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  resize: vertical;
 }
 
-.side-panel button {
-  margin-top: 10px;
-  padding: 5px 10px;
-  cursor: pointer;
+.side-panel textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
 }
 </style>

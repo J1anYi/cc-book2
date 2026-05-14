@@ -133,6 +133,7 @@ function nextChapter() {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: var(--bg-secondary);
 }
 
 .book-container {
@@ -144,18 +145,43 @@ function nextChapter() {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  padding: 10px;
-  background: #f5f5f5;
+  gap: var(--spacing-6);
+  padding: var(--spacing-4);
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
 
 .controls button {
-  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: var(--radius-md);
   cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.controls button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .controls button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  background: var(--color-neutral-400);
+}
+
+.controls span {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
 }
 </style>

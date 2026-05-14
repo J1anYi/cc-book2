@@ -6,31 +6,23 @@
 
 **核心价值：** 上传书籍 → 在线阅读 → 管理收藏
 
-## Current Milestone: v0.4 前端 UI/UX 优化
+## Current State: v0.4 ✅
 
-**Goal:** 优化前端界面，采用清新、现代风格
+**Last Shipped:** v0.4 前端 UI/UX 优化 (2026-05-14)
 
-**Target features:**
-- 统一的设计系统（颜色、字体、间距）
-- 导航栏现代化设计
-- 书籍卡片视觉优化
-- 书库首页布局优化
-- 详情页、阅读器、上传页、管理页优化
+**Key Features:**
+- 统一设计系统（翠绿主色 #10B981、靛蓝辅色 #6366F1）
+- 现代化导航栏和书籍卡片
+- 响应式布局
+- 所有页面视觉优化
+
+## Next Milestone Goals
+
+待定 - 运行 `/gsd-new-milestone` 开始规划
 
 ## Requirements
 
-### Active (v0.4)
-
-- DESIGN-01~04: 设计系统建立
-- NAVBAR-01~03: 导航栏优化
-- CARD-UI-01~05: 卡片优化
-- LIBRARY-UI-01~04: 书库首页优化
-- DETAIL-UI-01~04: 详情页优化
-- READER-UI-01~03: 阅读器优化
-- UPLOAD-UI-01~03: 上传页优化
-- ADMIN-UI-01~03: 管理页优化
-
-### Validated (Previous)
+### Validated (All Milestones)
 
 - ✓ 书籍上传功能（EPUB/PDF/TXT） — v0.1
 - ✓ 在线阅读器（三种格式） — v0.1
@@ -43,6 +35,8 @@
 - ✓ 书库首页展示 — v0.3
 - ✓ 书籍详情页 — v0.3
 - ✓ 导航优化 — v0.3
+- ✓ 统一设计系统 — v0.4
+- ✓ 前端 UI/UX 优化 — v0.4
 
 ### Out of Scope
 
@@ -61,16 +55,7 @@
 - **书籍格式：** EPUB, PDF, TXT
 - **架构：** 前后端分离，REST API
 - **阅读器库：** epubjs, pdfjs-dist
-
-## Key Decisions
-
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Node.js 全栈 | 前后端统一语言，EPUB/PDF 库丰富 | ✓ Good |
-| SQLite | 轻量数据库，无需额外服务 | ✓ Good |
-| Vue3 + Vite | 现代前端工具链，开发体验好 | ✓ Good |
-| epubjs + pdfjs-dist | 成熟的阅读器库，社区活跃 | ✓ Good |
-| CSS Variables | 设计系统实现方式 | ✓ Modern |
+- **设计系统：** CSS Variables
 
 ## Evolution
 
@@ -79,12 +64,12 @@
 
 **Goal:** 前端 UI/UX 优化
 
-**Focus:**
-- 清新、现代风格
-- 统一设计系统
-- 组件视觉优化
+**Accomplishments:**
+- 设计系统建立（翠绿主色、靛蓝辅色）
+- 核心组件优化（NavBar、BookCard、Library）
+- 页面视觉统一（BookDetail、Upload、Admin、Reader）
 
-**Stats:** 3 phases, 29 requirements
+**Stats:** 3 phases, 29 requirements, +2,351/-547 lines
 
 </details>
 
@@ -92,12 +77,6 @@
 <summary>v0.3 (2026-05-14)</summary>
 
 **Goal:** 阅读器入口与书籍信息展示
-
-**Accomplishments:**
-- 书库首页重构为卡片式展示
-- 书籍详情页实现
-- 导航优化
-- EPUB阅读器修复（章节导航）
 
 **Stats:** 2 phases, 18 requirements, +3,740/-639 lines
 

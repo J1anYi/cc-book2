@@ -234,8 +234,8 @@ async function deleteNoteHandler(id: number) {
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-3) var(--spacing-6);
-  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
-  color: var(--text-inverse);
+  background: var(--navbar-bg);
+  color: var(--navbar-text);
   box-shadow: var(--shadow-md);
 }
 
@@ -253,7 +253,7 @@ async function deleteNoteHandler(id: number) {
   display: flex;
   align-items: center;
   gap: var(--spacing-1);
-  color: var(--text-inverse);
+  color: var(--navbar-text);
   text-decoration: none;
   font-weight: var(--font-weight-medium);
   transition: all var(--transition-fast);
@@ -274,10 +274,10 @@ async function deleteNoteHandler(id: number) {
   gap: var(--spacing-1);
   padding: var(--spacing-2) var(--spacing-3);
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--navbar-link-bg);
   border: none;
   border-radius: var(--radius-md);
-  color: var(--text-inverse);
+  color: var(--navbar-text);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   transition: all var(--transition-fast);

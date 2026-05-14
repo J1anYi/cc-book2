@@ -204,6 +204,11 @@
   --border-default: #475569;
   --border-dark: #64748B;
 
+  /* Neutral Colors - Dark mode overrides */
+  --color-neutral-50: #1E293B;
+  --color-neutral-100: #334155;
+  --color-neutral-200: #475569;
+
   /* Semantic Colors - 深色模式调整 */
   --color-success-light: #065F46;
   --color-warning-light: #92400E;
@@ -216,4 +221,18 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.2);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+
+  /* Navbar background for dark mode */
+  --navbar-bg: linear-gradient(135deg, #334155 0%, #1E293B 100%);
+  --navbar-text: #F8FAFC;
+  --navbar-link-color: rgba(248, 250, 252, 0.85);
+  --navbar-link-bg: rgba(248, 250, 252, 0.15);
+}
+
+/* Light theme navbar defaults */
+:root {
+  --navbar-bg: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  --navbar-text: var(--text-inverse);
+  --navbar-link-color: rgba(255, 255, 255, 0.85);
+  --navbar-link-bg: rgba(255, 255, 255, 0.15);
 }

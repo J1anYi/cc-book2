@@ -36,8 +36,8 @@ const { cycleTheme, getThemeIcon, getThemeLabel } = useTheme();
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-3) var(--spacing-6);
-  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
-  color: var(--text-inverse);
+  background: var(--navbar-bg);
+  color: var(--navbar-text);
   box-shadow: var(--shadow-md);
 }
 
@@ -47,7 +47,7 @@ const { cycleTheme, getThemeIcon, getThemeLabel } = useTheme();
   gap: var(--spacing-2);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  color: var(--text-inverse);
+  color: var(--navbar-text);
   text-decoration: none;
   transition: transform var(--transition-fast);
 }
@@ -75,7 +75,7 @@ const { cycleTheme, getThemeIcon, getThemeLabel } = useTheme();
   align-items: center;
   gap: var(--spacing-2);
   padding: var(--spacing-3) var(--spacing-4);
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--navbar-link-color);
   text-decoration: none;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
@@ -88,14 +88,14 @@ const { cycleTheme, getThemeIcon, getThemeLabel } = useTheme();
 }
 
 .nav-link:hover {
-  color: var(--text-inverse);
-  background: rgba(255, 255, 255, 0.15);
+  color: var(--navbar-text);
+  background: var(--navbar-link-bg);
   transform: translateY(-1px);
 }
 
 .nav-link.active {
-  color: var(--text-inverse);
-  background: rgba(255, 255, 255, 0.2);
+  color: var(--navbar-text);
+  background: var(--navbar-link-bg);
   box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1);
 }
 
@@ -107,11 +107,12 @@ const { cycleTheme, getThemeIcon, getThemeLabel } = useTheme();
   height: 36px;
   padding: 0;
   margin-left: var(--spacing-2);
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--navbar-link-bg);
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
+  color: var(--navbar-text);
 }
 
 .theme-toggle:hover {

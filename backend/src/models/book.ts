@@ -150,9 +150,35 @@ async function initDatabase(): Promise<SQLiteDatabase> {
     )
   `);
 
+  // Collections table for organizing books
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS collections (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      icon TEXT,
+      color TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Book-collections junction table (many-to-many relationship)
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS book_collections (
+      book_id INTEGER NOT NULL,
+      collection_id INTEGER NOT NULL,
+      added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (book_id, collection_id),
+      FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
+      FOREIGN KEY (collection_id) REFERENCES collections(id) ON DELETE CASCADE
+    )
+  `);
+
   // Create indexes
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_title ON books(title)`);
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_author ON books(author)`);
+  dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_collections_book ON book_collections(book_id)`);
+  dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_collections_collection ON book_collections(collection_id)`);
   
   await dbInstance.save();
   

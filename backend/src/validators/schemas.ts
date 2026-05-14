@@ -13,6 +13,14 @@ export const categorySchema = z.object({
   description: z.string().max(500).optional(),
 });
 
+// Collection schema
+export const collectionSchema = z.object({
+  name: z.string().min(1, '名称不能为空').max(100, '名称不能超过100字符'),
+  description: z.string().max(500, '描述不能超过500字符').optional(),
+  icon: z.string().max(10, '图标不能超过10字符').optional(),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$|^$/, '颜色格式无效').optional(),
+});
+
 // Reading progress schema
 export const progressSchema = z.object({
   progress: z.number().min(0).max(1),
@@ -44,6 +52,7 @@ export const bookQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(100).default(20),
   search: z.string().max(200).optional(),
   category: z.coerce.number().int().positive().optional(),
+  collection_id: z.coerce.number().int().positive().optional(),
 });
 
 // ID parameter schema
@@ -54,6 +63,7 @@ export const idParamSchema = z.object({
 // Type exports
 export type BookInput = z.infer<typeof bookSchema>;
 export type CategoryInput = z.infer<typeof categorySchema>;
+export type CollectionInput = z.infer<typeof collectionSchema>;
 export type ProgressInput = z.infer<typeof progressSchema>;
 export type BookmarkInput = z.infer<typeof bookmarkSchema>;
 export type NoteInput = z.infer<typeof noteSchema>;

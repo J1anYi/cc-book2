@@ -7,6 +7,10 @@
       </router-link>
       <h2>{{ book?.title || '加载中...' }}</h2>
       <div class="toolbar">
+        <button @click="showHighlights = !showHighlights" :class="{ active: showHighlights }">
+          <span>💡</span>
+          高亮
+        </button>
         <button @click="showBookmarks = !showBookmarks" :class="{ active: showBookmarks }">
           <span>🔖</span>
           书签
@@ -24,6 +28,8 @@
         :bookId="bookId"
         :fileUrl="fileUrl"
         @progress="handleProgress"
+        @highlight-added="handleHighlightAdded"
+        @highlight-removed="handleHighlightRemoved"
       />
       <PdfReader
         v-else-if="book?.file_type === 'pdf'"
@@ -81,6 +87,31 @@
         </li>
       </ul>
     </div>
+
+    <!-- Highlights Panel -->
+    <div v-if="showHighlights" class="side-panel">
+      <div class="panel-header">
+        <h3>
+          <span>💡</span>
+          高亮
+        </h3>
+        <button class="close-btn" @click="showHighlights = false">✕</button>
+      </div>
+      <div v-if="highlights.length === 0" class="empty-state">
+        <p>暂无高亮</p>
+        <p class="hint">选中文字即可添加高亮</p>
+      </div>
+      <ul v-else>
+        <li v-for="hl in highlights" :key="hl.id" class="highlight-item">
+          <div class="highlight-color" :style="{ background: getHighlightColor(hl.color) }"></div>
+          <div class="highlight-content">
+            <p class="highlight-text">{{ hl.selected_text }}</p>
+            <span class="highlight-date">{{ formatDate(hl.created_at) }}</span>
+          </div>
+          <button class="delete-btn" @click="deleteHighlightHandler(hl.id)">删除</button>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -89,6 +120,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { getBook, type Book } from '../api/books';
 import { getFileUrl, getBookmarks, addBookmark, deleteBookmark, getNotes, addNote, deleteNote } from '../api/reading';
+import { getHighlights, deleteHighlight, type Highlight } from '../api/highlights';
 import EpubReader from '../components/EpubReader.vue';
 import PdfReader from '../components/PdfReader.vue';
 import TxtReader from '../components/TxtReader.vue';
@@ -98,18 +130,33 @@ const bookId = computed(() => Number(route.params.id));
 
 const book = ref<Book | null>(null);
 const fileUrl = computed(() => getFileUrl(bookId.value));
+const showHighlights = ref(false);
 const showBookmarks = ref(false);
 const showNotes = ref(false);
+const highlights = ref<Highlight[]>([]);
 const bookmarks = ref<any[]>([]);
 const notes = ref<any[]>([]);
 const newNote = ref('');
 const currentProgress = ref({ page: 0, percent: 0 });
 
+const highlightColors: Record<string, string> = {
+  yellow: '#FFEB3B',
+  green: '#4CAF50',
+  blue: '#2196F3',
+  pink: '#E91E63',
+  purple: '#9C27B0'
+};
+
 onMounted(async () => {
   book.value = await getBook(bookId.value);
+  await loadHighlights();
   await loadBookmarks();
   await loadNotes();
 });
+
+async function loadHighlights() {
+  highlights.value = await getHighlights(bookId.value);
+}
 
 async function loadBookmarks() {
   bookmarks.value = await getBookmarks(bookId.value);
@@ -121,6 +168,28 @@ async function loadNotes() {
 
 function handleProgress(data: { page: number; percent: number }) {
   currentProgress.value = data;
+}
+
+function handleHighlightAdded(highlight: Highlight) {
+  highlights.value.unshift(highlight);
+}
+
+function handleHighlightRemoved(id: number) {
+  highlights.value = highlights.value.filter(h => h.id !== id);
+}
+
+async function deleteHighlightHandler(id: number) {
+  await deleteHighlight(id);
+  await loadHighlights();
+}
+
+function getHighlightColor(color: string): string {
+  return highlightColors[color] || highlightColors.yellow;
+}
+
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
 }
 
 async function addBookmarkHandler() {
@@ -345,5 +414,58 @@ async function deleteNoteHandler(id: number) {
 .side-panel textarea:focus {
   outline: none;
   border-color: var(--color-primary-500);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-8) var(--spacing-4);
+  color: var(--text-secondary);
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+.empty-state .hint {
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-2);
+  color: var(--text-tertiary);
+}
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.highlight-color {
+  width: 4px;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.highlight-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.highlight-text {
+  margin: 0 0 var(--spacing-1) 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.highlight-date {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
 }
 </style>

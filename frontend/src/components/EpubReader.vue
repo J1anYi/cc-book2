@@ -114,12 +114,20 @@ onMounted(async () => {
         // Get selection position for color picker
         const range = selection?.getRangeAt(0);
         if (range) {
+          // Get the rect from the iframe's document
           const rect = range.getBoundingClientRect();
-          const containerRect = bookContainer.value?.getBoundingClientRect();
-          if (containerRect) {
+
+          // Get the iframe element position
+          const iframe = bookContainer.value?.querySelector('iframe');
+          if (iframe && bookContainer.value) {
+            const iframeRect = iframe.getBoundingClientRect();
+            const containerRect = bookContainer.value.getBoundingClientRect();
+
+            // Calculate position relative to the epub-reader container
+            // rect is relative to iframe viewport, iframeRect is relative to page
             colorPickerStyle.value = {
-              top: `${rect.bottom - containerRect.top + 10}px`,
-              left: `${rect.left - containerRect.left}px`
+              top: `${iframeRect.top - containerRect.top + rect.bottom + 10}px`,
+              left: `${iframeRect.left - containerRect.left + rect.left}px`
             };
           }
         }

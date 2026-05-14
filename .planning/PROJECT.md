@@ -6,20 +6,24 @@
 
 **核心价值：** 上传书籍 → 在线阅读 → 管理收藏
 
-## Current Milestone: v0.5 深色模式与高亮标注
+## Current Milestone: v0.6 书库管理增强
 
-**Goal:** 提升阅读体验 - 夜间阅读 + 笔记质量
+**Goal:** 提升书库组织能力 - 分类、标签、阅读状态
 
 **Target features:**
-- 深色模式（系统跟随、手动切换、持久化）
-- 高亮标注（划线选择、颜色标记、笔记关联）
+- 分类/收藏夹系统（优先）
+- 多标签系统
+- 阅读状态追踪（在读/想读/已读）
+- 智能分组（按系列/作者）
 
 ## Requirements
 
-### Active (v0.5)
+### Active (v0.6)
 
-- DARK-01~05: 深色模式实现
-- HIGHLIGHT-01~06: 高亮标注功能
+- COLLECTION-01~04: 分类/收藏夹系统
+- TAG-01~04: 多标签系统
+- STATUS-01~03: 阅读状态追踪
+- GROUP-01~02: 智能分组
 
 ### Validated (Previous)
 
@@ -36,6 +40,8 @@
 - ✓ 导航优化 — v0.3
 - ✓ 统一设计系统 — v0.4
 - ✓ 前端 UI/UX 优化 — v0.4
+- ✓ 深色模式（系统跟随、手动切换、持久化） — v0.5
+- ✓ 高亮标注（划线选择、颜色标记） — v0.5
 
 ### Out of Scope
 
@@ -57,6 +63,21 @@
 - **设计系统：** CSS Variables（支持主题切换）
 
 ## Evolution
+
+<details>
+<summary>v0.6 (2026-05-14)</summary>
+
+**Goal:** 书库管理增强
+
+**Focus:**
+- 分类/收藏夹系统
+- 多标签系统
+- 阅读状态追踪
+- 智能分组
+
+**Stats:** Planning in progress
+
+</details>
 
 <details>
 <summary>v0.5 (2026-05-14)</summary>

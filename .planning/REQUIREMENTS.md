@@ -1,129 +1,121 @@
-# Requirements — 书籍观看系统 v0.5
+# Requirements: 书籍观看系统 v0.6
 
-## v0.5 Requirements - 深色模式与高亮标注
-
-### 深色模式 (DARK)
-
-- [ ] **DARK-01**: 定义深色主题颜色变量（背景、文字、主色、边框）
-- [ ] **DARK-02**: 实现主题切换机制（CSS class 切换）
-- [ ] **DARK-03**: 添加主题切换按钮（导航栏或设置）
-- [ ] **DARK-04**: 支持系统主题跟随（prefers-color-scheme）
-- [ ] **DARK-05**: 主题偏好持久化（localStorage）
-
-### 高亮标注 (HIGHLIGHT)
-
-- [ ] **HIGHLIGHT-01**: EPUB 文本选择和高亮功能
-- [ ] **HIGHLIGHT-02**: 高亮颜色选择（黄、绿、蓝、粉、紫）
-- [ ] **HIGHLIGHT-03**: 高亮数据持久化（后端 API + 数据库）
-- [ ] **HIGHLIGHT-04**: 高亮列表展示（侧边栏）
-- [ ] **HIGHLIGHT-05**: 高亮关联笔记功能
-- [ ] **HIGHLIGHT-06**: 高亮删除功能
+**Defined:** 2026-05-14
+**Core Value:** 上传书籍 → 在线阅读 → 管理收藏
+**Milestone:** v0.6 书库管理增强
 
 ---
 
-## 设计方向
+## v1 Requirements
 
-### 深色模式
+### Collections (收藏夹系统)
 
-**颜色方案：**
+- [ ] **COLL-01**: 用户可以创建、删除、重命名收藏夹
+- [ ] **COLL-02**: 用户可以为收藏夹设置图标和颜色
+- [ ] **COLL-03**: 用户可以将书籍添加到收藏夹（一本书可属于多个收藏夹）
+- [ ] **COLL-04**: 用户可以从收藏夹移除书籍
+- [ ] **COLL-05**: 用户可以按收藏夹筛选书籍列表
+- [ ] **COLL-06**: 收藏夹列表显示书籍数量
 
-| 用途 | 浅色模式 | 深色模式 |
-|------|----------|----------|
-| 背景 | #F8FAFC | #0F172A |
-| 卡片 | #FFFFFF | #1E293B |
-| 文字 | #0F172A | #F8FAFC |
-| 次要文字 | #64748B | #94A3B8 |
-| 主色 | #10B981 | #34D399 |
-| 边框 | #E2E8F0 | #334155 |
+### Reading Status (阅读状态)
 
-**切换逻辑：**
-1. 默认跟随系统 (`prefers-color-scheme`)
-2. 用户手动切换后覆盖系统设置
-3. 选择保存到 `localStorage`
-4. 页面加载时读取并应用
+- [ ] **STAT-01**: 书籍有三种阅读状态：想读、在读、已读
+- [ ] **STAT-02**: 用户可以手动切换书籍的阅读状态
+- [ ] **STAT-03**: 打开书籍阅读时自动将状态设为"在读"
+- [ ] **STAT-04**: 用户可以按阅读状态筛选书籍列表
 
-### 高亮标注
+### Tags (多标签系统)
 
-**颜色方案：**
+- [ ] **TAG-01**: 用户可以创建、删除、重命名标签
+- [ ] **TAG-02**: 用户可以为标签设置颜色
+- [ ] **TAG-03**: 用户可以为书籍添加多个标签
+- [ ] **TAG-04**: 用户可以从书籍移除标签
+- [ ] **TAG-05**: 用户可以按标签筛选书籍列表（支持多标签组合筛选）
+- [ ] **TAG-06**: 标签列表显示使用次数
 
-| 颜色 | 用途 | 色值 |
-|------|------|------|
-| 黄色 | 重点 | #FEF08A / #CA8A04 |
-| 绿色 | 认同 | #BBF7D0 / #16A34A |
-| 蓝色 | 信息 | #BFDBFE / #2563EB |
-| 粉色 | 疑问 | #FBCFE8 / #DB2777 |
-| 紫色 | 洞见 | #DDD6FE / #7C3AED |
+### Series (系列分组)
 
-**交互流程：**
-1. 长按/选择文本 → 显示高亮菜单
-2. 选择颜色 → 应用高亮 + 保存
-3. 点击高亮 → 显示详情（可添加笔记）
-4. 侧边栏 → 高亮列表
+- [ ] **SERI-01**: 用户可以创建、删除、重命名系列
+- [ ] **SERI-02**: 用户可以将书籍分配到系列并设置顺序
+- [ ] **SERI-03**: 用户可以按系列查看书籍列表
+- [ ] **SERI-04**: 系统可以从书名自动检测系列信息（可选实现）
 
 ---
 
-## Technical Notes
+## v2 Requirements (未来版本)
 
-### 深色模式实现
+### 智能分组增强
 
-```css
-/* design-system.css 扩展 */
-:root {
-  /* Light theme (default) */
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #F8FAFC;
-  --text-primary: #0F172A;
-  /* ... */
-}
+- **GROUP-01**: 按作者分组查看
+- **GROUP-02**: 按出版社分组查看
+- **GROUP-03**: 按年份分组查看
 
-[data-theme="dark"] {
-  --bg-primary: #1E293B;
-  --bg-secondary: #0F172A;
-  --text-primary: #F8FAFC;
-  /* ... */
-}
-```
+### 阅读统计
 
-```typescript
-// theme.ts
-const theme = ref<'light' | 'dark' | 'system'>('system')
+- **STAT-05**: 显示阅读天数统计
+- **STAT-06**: 显示完成书籍数量
+- **STAT-07**: 年度阅读目标设置
 
-function applyTheme(t: string) {
-  const isDark = t === 'dark' || 
-    (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
-}
-```
+### 收藏夹增强
 
-### 高亮标注实现
+- **COLL-07**: 嵌套收藏夹（子收藏夹）
+- **COLL-08**: 收藏夹排序（自定义顺序）
 
-**数据库扩展：**
-```sql
-CREATE TABLE highlights (
-  id INTEGER PRIMARY KEY,
-  book_id INTEGER NOT NULL,
-  cfi_range TEXT NOT NULL,      -- EPUB CFI 位置
-  selected_text TEXT NOT NULL,  -- 选中文本
-  color TEXT NOT NULL,          -- 颜色
-  note TEXT,                    -- 关联笔记
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (book_id) REFERENCES books(id)
-);
-```
+### 标签增强
 
-**API 设计：**
-- `GET /api/highlights/:bookId` - 获取书籍高亮
-- `POST /api/highlights` - 添加高亮
-- `PUT /api/highlights/:id` - 更新高亮（添加笔记）
-- `DELETE /api/highlights/:id` - 删除高亮
-
-**epubjs 高亮：**
-```typescript
-rendition.annotations.highlight(cfi, {}, (e) => {
-  // 点击高亮回调
-}, 'highlight', { 'fill': color })
-```
+- **TAG-07**: 标签云可视化展示
+- **TAG-08**: 标签自动补全（输入时建议）
+- **TAG-09**: 标签合并功能
 
 ---
 
-*Last updated: 2026-05-14*
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| 多用户系统 | 个人书库，单用户即可 |
+| 云端同步 | 本地部署优先 |
+| 社交功能 | 非社区平台 |
+| 移动端 App | Web 端优先 |
+| 全文搜索 | 技术复杂度高，后续版本 |
+| 阅读统计图表 | 后续版本 |
+| 嵌套收藏夹 | 简化实现，v2 考虑 |
+
+---
+
+## Traceability
+
+Which phases cover which requirements. Updated during roadmap creation.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| COLL-01 | Phase 14 | Pending |
+| COLL-02 | Phase 14 | Pending |
+| COLL-03 | Phase 14 | Pending |
+| COLL-04 | Phase 14 | Pending |
+| COLL-05 | Phase 14 | Pending |
+| COLL-06 | Phase 14 | Pending |
+| STAT-01 | Phase 15 | Pending |
+| STAT-02 | Phase 15 | Pending |
+| STAT-03 | Phase 15 | Pending |
+| STAT-04 | Phase 15 | Pending |
+| TAG-01 | Phase 16 | Pending |
+| TAG-02 | Phase 16 | Pending |
+| TAG-03 | Phase 16 | Pending |
+| TAG-04 | Phase 16 | Pending |
+| TAG-05 | Phase 16 | Pending |
+| TAG-06 | Phase 16 | Pending |
+| SERI-01 | Phase 17 | Pending |
+| SERI-02 | Phase 17 | Pending |
+| SERI-03 | Phase 17 | Pending |
+| SERI-04 | Phase 17 | Pending |
+
+**Coverage:**
+- v1 requirements: 20 total
+- Mapped to phases: 20
+- Unmapped: 0 ✓
+
+---
+
+*Requirements defined: 2026-05-14*
+*Last updated: 2026-05-14 after initial definition*

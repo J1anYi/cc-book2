@@ -24,6 +24,8 @@ export interface Book {
   tags: string | null;
   reading_status: string;
   created_at: string;
+  series_id: number | null;
+  series_index: number | null;
 }
 
 export interface Category {
@@ -50,7 +52,8 @@ export async function getBooks(
   collectionId?: number,
   status?: string,
   tags?: string,
-  tagMode?: 'AND' | 'OR'
+  tagMode?: 'AND' | 'OR',
+  seriesId?: number
 ): Promise<Book[]> {
   const params: any = {};
   if (search) params.search = search;
@@ -58,6 +61,7 @@ export async function getBooks(
   if (status) params.status = status;
   if (tags) params.tags = tags;
   if (tagMode) params.tagMode = tagMode;
+  if (seriesId) params.series_id = seriesId;
   const response = await api.get('/books', { params });
   return response.data.data || response.data;
 }
@@ -81,6 +85,15 @@ export async function updateReadingStatus(
   status: 'want_to_read' | 'reading' | 'read'
 ): Promise<Book> {
   const response = await api.put(`/books/${id}/status`, { status });
+  return response.data;
+}
+
+export async function setBookSeries(
+  id: number,
+  seriesId: number | null,
+  seriesIndex?: number
+): Promise<Book> {
+  const response = await api.put(`/books/${id}/series`, { seriesId, seriesIndex });
   return response.data;
 }
 

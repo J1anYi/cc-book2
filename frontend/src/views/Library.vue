@@ -27,6 +27,14 @@
           </option>
         </select>
       </div>
+      <div class="filter-box">
+        <select v-model="selectedStatus" @change="handleStatusChange">
+          <option :value="null">全部状态</option>
+          <option value="want_to_read">📖 想读</option>
+          <option value="reading">📚 在读</option>
+          <option value="read">✅ 已读</option>
+        </select>
+      </div>
     </div>
 
     <!-- Continue Reading Section -->
@@ -102,6 +110,7 @@ const readingHistory = ref<any[]>([]);
 const searchQuery = ref('');
 const selectedCategory = ref('');
 const selectedCollection = ref<number | null>(null);
+const selectedStatus = ref<string | null>(null);
 
 const recentBooks = computed(() => {
   return readingHistory.value
@@ -170,14 +179,23 @@ async function loadData() {
 async function handleCollectionChange() {
   try {
     if (selectedCollection.value) {
-      const booksData = await getBooks(undefined, selectedCollection.value);
+      const booksData = await getBooks(undefined, selectedCollection.value, selectedStatus.value || undefined);
       books.value = booksData;
     } else {
-      const booksData = await getBooks();
+      const booksData = await getBooks(undefined, undefined, selectedStatus.value || undefined);
       books.value = booksData;
     }
   } catch (error) {
     console.error('Failed to filter by collection:', error);
+  }
+}
+
+async function handleStatusChange() {
+  try {
+    const booksData = await getBooks(undefined, selectedCollection.value || undefined, selectedStatus.value || undefined);
+    books.value = booksData;
+  } catch (error) {
+    console.error('Failed to filter by status:', error);
   }
 }
 

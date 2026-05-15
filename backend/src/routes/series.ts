@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { db } from '../models/book.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { validateBody, validateParams } from '../middleware/validate.js';
-import { seriesSchema, idParamSchema, setBookSeriesSchema } from '../validators/schemas.js';
+import { seriesSchema, idParamSchema, setBookSeriesSchema, detectSeriesSchema } from '../validators/schemas.js';
 import { detectSeriesInfo } from '../utils/seriesDetection.js';
 
 const router = Router();
@@ -198,7 +198,7 @@ router.delete('/:id/books/:bookId', authMiddleware, validateParams(idParamSchema
 });
 
 // POST /api/series/detect - Auto-detect series info from book titles
-router.post('/detect', authMiddleware, (req, res) => {
+router.post('/detect', authMiddleware, validateBody(detectSeriesSchema), (req, res) => {
   try {
     const { bookIds } = req.body;
     const database = db();

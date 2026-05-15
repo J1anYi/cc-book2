@@ -39,6 +39,11 @@ export const setBookSeriesSchema = z.object({
   seriesIndex: z.number().positive().optional(),
 });
 
+// Detect series schema
+export const detectSeriesSchema = z.object({
+  bookIds: z.array(z.number().int().positive()).min(1, '至少需要一个书籍ID'),
+});
+
 // Set book tags schema
 export const setBookTagsSchema = z.object({
   tagIds: z.array(z.number().int().positive()),
@@ -112,4 +117,5 @@ export type TagInput = z.infer<typeof tagSchema>;
 export type SetBookTagsInput = z.infer<typeof setBookTagsSchema>;
 export type SeriesInput = z.infer<typeof seriesSchema>;
 export type SetBookSeriesInput = z.infer<typeof setBookSeriesSchema>;
+export type DetectSeriesInput = z.infer<typeof detectSeriesSchema>;
 export type BookQuery = z.infer<typeof bookQuerySchema>;

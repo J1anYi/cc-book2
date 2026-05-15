@@ -11,6 +11,7 @@ import tagsRouter from './routes/tags.js';
 import readingRouter from './routes/reading.js';
 import filesRouter from './routes/files.js';
 import highlightsRouter from './routes/highlights.js';
+import seriesRouter from './routes/series.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -58,6 +59,7 @@ app.use('/api/tags', tagsRouter);
 app.use('/api/reading', readingRouter);
 app.use('/api/files', filesRouter);
 app.use('/api/highlights', highlightsRouter);
+app.use('/api/series', seriesRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

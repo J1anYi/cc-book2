@@ -45,11 +45,19 @@ export async function uploadBook(file: File): Promise<Book> {
   return response.data;
 }
 
-export async function getBooks(search?: string, collectionId?: number, status?: string): Promise<Book[]> {
+export async function getBooks(
+  search?: string,
+  collectionId?: number,
+  status?: string,
+  tags?: string,
+  tagMode?: 'AND' | 'OR'
+): Promise<Book[]> {
   const params: any = {};
   if (search) params.search = search;
   if (collectionId) params.collection_id = collectionId;
   if (status) params.status = status;
+  if (tags) params.tags = tags;
+  if (tagMode) params.tagMode = tagMode;
   const response = await api.get('/books', { params });
   return response.data.data || response.data;
 }

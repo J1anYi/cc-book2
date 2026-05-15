@@ -191,11 +191,14 @@ function goToReader(bookId: number) {
 }
 
 function toggleTag(tagId: number) {
-  if (selectedTags.value.has(tagId)) {
-    selectedTags.value.delete(tagId);
+  // Create new Set to trigger Vue reactivity
+  const newSet = new Set(selectedTags.value);
+  if (newSet.has(tagId)) {
+    newSet.delete(tagId);
   } else {
-    selectedTags.value.add(tagId);
+    newSet.add(tagId);
   }
+  selectedTags.value = newSet;
   handleTagChange();
 }
 

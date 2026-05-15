@@ -44,6 +44,12 @@ export const detectSeriesSchema = z.object({
   bookIds: z.array(z.number().int().positive()).min(1, '至少需要一个书籍ID'),
 });
 
+// Reorder series schema
+export const reorderSeriesSchema = z.object({
+  seriesId: z.number().int().positive(),
+  bookIds: z.array(z.number().int().positive()).min(1, '至少需要一个书籍ID'),
+});
+
 // Set book tags schema
 export const setBookTagsSchema = z.object({
   tagIds: z.array(z.number().int().positive()),
@@ -118,4 +124,5 @@ export type SetBookTagsInput = z.infer<typeof setBookTagsSchema>;
 export type SeriesInput = z.infer<typeof seriesSchema>;
 export type SetBookSeriesInput = z.infer<typeof setBookSeriesSchema>;
 export type DetectSeriesInput = z.infer<typeof detectSeriesSchema>;
+export type ReorderSeriesInput = z.infer<typeof reorderSeriesSchema>;
 export type BookQuery = z.infer<typeof bookQuerySchema>;

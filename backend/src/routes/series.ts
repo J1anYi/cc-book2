@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { db } from '../models/book.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { validateBody, validateParams } from '../middleware/validate.js';
-import { seriesSchema, idParamSchema, setBookSeriesSchema, detectSeriesSchema } from '../validators/schemas.js';
+import { seriesSchema, idParamSchema, setBookSeriesSchema, detectSeriesSchema, reorderSeriesSchema } from '../validators/schemas.js';
 import { detectSeriesInfo } from '../utils/seriesDetection.js';
 
 const router = Router();
@@ -229,7 +229,7 @@ router.post('/detect', authMiddleware, validateBody(detectSeriesSchema), (req, r
 });
 
 // POST /api/series/reorder - Reorder books within a series
-router.post('/reorder', authMiddleware, (req, res) => {
+router.post('/reorder', authMiddleware, validateBody(reorderSeriesSchema), (req, res) => {
   try {
     const { seriesId, bookIds } = req.body; // bookIds in new order
     const database = db();

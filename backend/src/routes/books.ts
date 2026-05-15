@@ -7,7 +7,7 @@ import { db } from '../models/book.js';
 import { extractMetadata } from '../utils/metadata.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { validateQuery, validateParams, validateBody } from '../middleware/validate.js';
-import { bookQuerySchema, idParamSchema, readingStatusSchema } from '../validators/schemas.js';
+import { bookQuerySchema, idParamSchema, readingStatusSchema, setBookSeriesSchema } from '../validators/schemas.js';
 import { validateExtension, validateFileType } from '../utils/fileValidator.js';
 
 const router = Router();
@@ -67,7 +67,7 @@ router.post('/', upload.single('book'), async (req, res) => {
 });
 
 router.get('/', validateQuery(bookQuerySchema), (req, res) => {
-  const { page = 1, limit = 20, search, collection_id, status, tags, tagMode = 'OR' } = req.query as any;
+  const { page = 1, limit = 20, search, collection_id, status, tags, tagMode = 'OR', series_id } = req.query as any;
   const offset = (page - 1) * limit;
   const database = db();
 
@@ -92,6 +92,12 @@ router.get('/', validateQuery(bookQuerySchema), (req, res) => {
   if (status) {
     conditions.push('b.reading_status = ?');
     params.push(status);
+  }
+
+  // Series filter
+  if (series_id) {
+    conditions.push('b.series_id = ?');
+    params.push(series_id);
   }
 
   // Tag filtering
@@ -125,7 +131,14 @@ router.get('/', validateQuery(bookQuerySchema), (req, res) => {
     sql += ' WHERE ' + conditions.join(' AND ');
   }
 
-  sql += ' ORDER BY b.created_at DESC LIMIT ? OFFSET ?';
+  // Order by series_index if filtering by series, otherwise by created_at
+  if (series_id) {
+    sql += ' ORDER BY b.series_index ASC, b.created_at DESC';
+  } else {
+    sql += ' ORDER BY b.created_at DESC';
+  }
+
+  sql += ' LIMIT ? OFFSET ?';
   params.push(limit, offset);
 
   const books = database.all(sql, params);
@@ -149,6 +162,12 @@ router.get('/', validateQuery(bookQuerySchema), (req, res) => {
   if (status) {
     countConditions.push('b.reading_status = ?');
     countParams.push(status);
+  }
+
+  // Series filter for count query
+  if (series_id) {
+    countConditions.push('b.series_id = ?');
+    countParams.push(series_id);
   }
 
   // Tag filtering for count query
@@ -275,6 +294,57 @@ router.put('/:id/status', validateParams(idParamSchema), validateBody(readingSta
   } catch (error) {
     console.error('Update reading status error:', error);
     res.status(500).json({ error: '更新阅读状态失败' });
+  }
+});
+
+// Set book series
+router.put('/:id/series', validateParams(idParamSchema), validateBody(setBookSeriesSchema), async (req, res) => {
+  try {
+    const { id } = req.params as any;
+    const { seriesId, seriesIndex } = req.body;
+    const database = db();
+
+    const book = database.get('SELECT * FROM books WHERE id = ?', [id]);
+    if (!book) {
+      return res.status(404).json({ error: '书籍不存在' });
+    }
+
+    if (seriesId === null) {
+      // Remove from series
+      database.run(
+        'UPDATE books SET series_id = NULL, series_index = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [id]
+      );
+    } else {
+      // Verify series exists
+      const series = database.get('SELECT id FROM series WHERE id = ?', [seriesId]);
+      if (!series) {
+        return res.status(404).json({ error: '系列不存在' });
+      }
+
+      // Calculate index if not provided
+      let index = seriesIndex;
+      if (index === undefined || index === null) {
+        const maxIndex = database.get(
+          'SELECT MAX(series_index) as max FROM books WHERE series_id = ?',
+          [seriesId]
+        );
+        index = (maxIndex.max || 0) + 1;
+      }
+
+      database.run(
+        'UPDATE books SET series_id = ?, series_index = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [seriesId, index, id]
+      );
+    }
+
+    await database.save();
+
+    const updatedBook = database.get('SELECT * FROM books WHERE id = ?', [id]);
+    res.json(updatedBook);
+  } catch (error) {
+    console.error('Update series error:', error);
+    res.status(500).json({ error: '设置系列失败' });
   }
 });
 

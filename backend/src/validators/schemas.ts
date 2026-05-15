@@ -21,6 +21,17 @@ export const collectionSchema = z.object({
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$|^$/, '颜色格式无效').optional(),
 });
 
+// Tag schema
+export const tagSchema = z.object({
+  name: z.string().min(1, '标签名称不能为空').max(50, '标签名称不能超过50字符'),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$|^$/, '颜色格式无效').optional(),
+});
+
+// Set book tags schema
+export const setBookTagsSchema = z.object({
+  tagIds: z.array(z.number().int().positive()),
+});
+
 // Reading status schema
 export const readingStatusSchema = z.object({
   status: z.enum(['want_to_read', 'reading', 'read'], {
@@ -61,6 +72,8 @@ export const bookQuerySchema = z.object({
   category: z.coerce.number().int().positive().optional(),
   collection_id: z.coerce.number().int().positive().optional(),
   status: z.enum(['want_to_read', 'reading', 'read']).optional(),
+  tags: z.string().optional(), // Comma-separated tag IDs
+  tagMode: z.enum(['AND', 'OR']).default('OR'),
 });
 
 // ID parameter schema
@@ -82,4 +95,6 @@ export type ProgressInput = z.infer<typeof progressSchema>;
 export type BookmarkInput = z.infer<typeof bookmarkSchema>;
 export type NoteInput = z.infer<typeof noteSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+export type TagInput = z.infer<typeof tagSchema>;
+export type SetBookTagsInput = z.infer<typeof setBookTagsSchema>;
 export type BookQuery = z.infer<typeof bookQuerySchema>;

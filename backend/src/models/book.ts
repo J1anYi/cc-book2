@@ -174,6 +174,36 @@ async function initDatabase(): Promise<SQLiteDatabase> {
     )
   `);
 
+  // Tags table for multi-tag system
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS tags (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      color TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Book-tags junction table (many-to-many relationship)
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS book_tags (
+      book_id INTEGER NOT NULL,
+      tag_id INTEGER NOT NULL,
+      added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (book_id, tag_id),
+      FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
+      FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Metadata table for migration tracking
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS metadata (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    )
+  `);
+
   // Add reading_status column to books table if it doesn't exist
   const columns = dbInstance.all("PRAGMA table_info(books)");
   const hasReadingStatus = columns.some((col: any) => col.name === 'reading_status');
@@ -186,6 +216,8 @@ async function initDatabase(): Promise<SQLiteDatabase> {
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_author ON books(author)`);
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_collections_book ON book_collections(book_id)`);
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_collections_collection ON book_collections(collection_id)`);
+  dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_tags_book ON book_tags(book_id)`);
+  dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_tags_tag ON book_tags(tag_id)`);
   
   await dbInstance.save();
   

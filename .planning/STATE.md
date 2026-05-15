@@ -3,24 +3,24 @@ gsd_state_version: 1.0
 milestone: v0.6
 milestone_name: 书库管理增强
 status: in_progress
-last_updated: "2026-05-15T12:00:00.000Z"
-last_activity: 2026-05-15 — Phase 15 completed
+last_updated: "2026-05-15T14:00:00.000Z"
+last_activity: 2026-05-15 — Phase 16 Plan 02 completed
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
-  percent: 50
+  total_plans: 6
+  completed_plans: 5
+  percent: 83
 ---
 
 # State — 书籍观看系统
 
 ## Current Position
 
-Phase: 15 - 阅读状态
-Plan: 15-02 (complete)
-Status: Phase 15 complete
-Last activity: 2026-05-15 — Phase 15 completed
+Phase: 16 - 多标签系统
+Plan: 16-02 (complete)
+Status: Phase 16 Plan 02 complete - Frontend multi-tag support implemented
+Last activity: 2026-05-15 — Phase 16 Plan 02 completed
 
 ---
 
@@ -39,7 +39,7 @@ See: .planning/PROJECT.md (updated 2026-05-15)
 |-------|------|--------|
 | 14 | 收藏夹系统 | Complete (2/2 plans) |
 | 15 | 阅读状态 | Complete (2/2 plans) |
-| 16 | 多标签系统 | Pending |
+| 16 | 多标签系统 | In Progress (2/2 plans) |
 | 17 | 系列分组 | Pending |
 
 ---
@@ -63,12 +63,17 @@ See: .planning/PROJECT.md (updated 2026-05-15)
 3. **Reading Status Default** - New books default to 'want_to_read' status
 4. **Auto-Status Update** - Opening a 'want_to_read' book automatically changes to 'reading'
 5. **Status Filter Combined** - Status filter works with collection filter (AND logic)
+6. **Tag System Architecture** - Use junction table (book_tags) for many-to-many relationship between books and tags
+7. **Tag Filter Modes** - Support both AND and OR modes for filtering by multiple tags
+8. **Tag Usage Counts** - Track and display how many books use each tag
+9. **Tag Color Support** - Tags can have optional colors for visual distinction
+10. **Set for Selected Tags** - Use Set<number> in frontend to prevent duplicate selections
 
 ---
 
 ## Session Info
 
-Last session: 2026-05-15T12:00:00.000Z
+Last session: 2026-05-15T14:00:00.000Z
 Resume file: None
 
 ---

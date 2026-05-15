@@ -98,13 +98,36 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="tags">标签</label>
-            <input
-              id="tags"
-              v-model="editForm.tags"
-              type="text"
-              placeholder="多个标签用逗号分隔"
-            />
+            <label>标签</label>
+            <div class="tag-selector">
+              <div class="selected-tags">
+                <span
+                  v-for="tag in bookTags"
+                  :key="tag.id"
+                  class="selected-tag"
+                  :style="{ backgroundColor: tag.color || 'var(--color-primary-100)', color: tag.color ? 'white' : 'var(--color-primary-700)' }"
+                >
+                  {{ tag.name }}
+                  <button @click="removeTag(tag.id)" class="remove-tag" type="button">×</button>
+                </span>
+                <span v-if="bookTags.length === 0" class="no-tags">未设置标签</span>
+              </div>
+              <div class="available-tags" v-if="availableTags.length > 0">
+                <label class="available-label">添加标签：</label>
+                <div class="tag-options">
+                  <button
+                    v-for="tag in availableTags"
+                    :key="tag.id"
+                    type="button"
+                    class="tag-option"
+                    :style="{ borderColor: tag.color || 'var(--border-light)' }"
+                    @click="addTag(tag.id)"
+                  >
+                    {{ tag.name }}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>收藏夹</label>
@@ -145,6 +168,7 @@ import { useRoute } from 'vue-router';
 import { getBook, getCategories, updateBook, type Book, type Category } from '../api/books';
 import { getCollections, addBookToCollection, removeBookFromCollection, getBookCollections, type Collection } from '../api/collections';
 import { getProgress, type ReadingProgress } from '../api/reading';
+import { getTags, getBookTags, setBookTags, type Tag } from '../api/tags';
 
 const route = useRoute();
 const bookId = computed(() => Number(route.params.id));
@@ -154,6 +178,8 @@ const progress = ref<ReadingProgress | null>(null);
 const categories = ref<Category[]>([]);
 const collections = ref<Collection[]>([]);
 const bookCollections = ref<Set<number>>(new Set());
+const allTags = ref<Tag[]>([]);
+const bookTags = ref<Tag[]>([]);
 const loading = ref(true);
 const error = ref('');
 
@@ -175,6 +201,11 @@ const fileTypeIcon = computed(() => {
   }
 });
 
+const availableTags = computed(() => {
+  const selectedIds = new Set(bookTags.value.map(t => t.id));
+  return allTags.value.filter(t => !selectedIds.has(t.id));
+});
+
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
   return date.toLocaleDateString('zh-CN', {
@@ -191,12 +222,14 @@ async function loadBook() {
     loading.value = true;
     error.value = '';
 
-    const [bookData, progressData, categoriesData, collectionsData, bookCollectionIds] = await Promise.all([
+    const [bookData, progressData, categoriesData, collectionsData, bookCollectionIds, tagsData, bookTagsData] = await Promise.all([
       getBook(bookId.value),
       getProgress(bookId.value).catch(() => null),
       getCategories(),
       getCollections(),
-      getBookCollections(bookId.value).catch(() => [])
+      getBookCollections(bookId.value).catch(() => []),
+      getTags(),
+      getBookTags(bookId.value).catch(() => [])
     ]);
 
     book.value = bookData;
@@ -204,6 +237,8 @@ async function loadBook() {
     categories.value = categoriesData;
     collections.value = collectionsData;
     bookCollections.value = new Set(bookCollectionIds);
+    allTags.value = tagsData;
+    bookTags.value = bookTagsData;
 
     editForm.value = {
       category: bookData.category || '',
@@ -232,6 +267,32 @@ async function toggleCollection(collectionId: number) {
     collections.value = collectionsData;
   } catch (error) {
     console.error('Failed to toggle collection:', error);
+  }
+}
+
+async function addTag(tagId: number) {
+  try {
+    const newTagIds = [...bookTags.value.map(t => t.id), tagId];
+    const updatedTags = await setBookTags(bookId.value, newTagIds);
+    bookTags.value = updatedTags;
+    // Refresh all tags to update usage counts
+    const tagsData = await getTags();
+    allTags.value = tagsData;
+  } catch (error) {
+    console.error('Failed to add tag:', error);
+  }
+}
+
+async function removeTag(tagId: number) {
+  try {
+    const newTagIds = bookTags.value.filter(t => t.id !== tagId).map(t => t.id);
+    const updatedTags = await setBookTags(bookId.value, newTagIds);
+    bookTags.value = updatedTags;
+    // Refresh all tags to update usage counts
+    const tagsData = await getTags();
+    allTags.value = tagsData;
+  } catch (error) {
+    console.error('Failed to remove tag:', error);
   }
 }
 
@@ -582,6 +643,86 @@ onMounted(() => {
   font-size: var(--font-size-xs);
   color: var(--text-tertiary);
   margin-top: var(--spacing-2);
+}
+
+/* Tag Selector */
+.tag-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  min-height: 32px;
+}
+
+.selected-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-full);
+}
+
+.remove-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.remove-tag:hover {
+  opacity: 1;
+}
+
+.no-tags {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+.available-tags {
+  padding-top: var(--spacing-2);
+  border-top: 1px solid var(--border-light);
+}
+
+.available-label {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-2);
+}
+
+.tag-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.tag-option {
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  background: var(--bg-primary);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tag-option:hover {
+  background: var(--bg-tertiary);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 600px) {

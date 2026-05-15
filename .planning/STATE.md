@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v0.6
 milestone_name: 书库管理增强
 status: in_progress
-last_updated: "2026-05-15T14:00:00.000Z"
-last_activity: 2026-05-15 — Phase 16 Plan 02 completed
+last_updated: "2026-05-15T15:00:00.000Z"
+last_activity: 2026-05-15 — Phase 16 completed
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
-  percent: 83
+  completed_plans: 6
+  percent: 75
 ---
 
 # State — 书籍观看系统
@@ -19,8 +19,8 @@ progress:
 
 Phase: 16 - 多标签系统
 Plan: 16-02 (complete)
-Status: Phase 16 Plan 02 complete - Frontend multi-tag support implemented
-Last activity: 2026-05-15 — Phase 16 Plan 02 completed
+Status: Phase 16 complete - Multi-tag system fully implemented
+Last activity: 2026-05-15 — Phase 16 completed
 
 ---
 
@@ -39,7 +39,7 @@ See: .planning/PROJECT.md (updated 2026-05-15)
 |-------|------|--------|
 | 14 | 收藏夹系统 | Complete (2/2 plans) |
 | 15 | 阅读状态 | Complete (2/2 plans) |
-| 16 | 多标签系统 | In Progress (2/2 plans) |
+| 16 | 多标签系统 | Complete (2/2 plans) |
 | 17 | 系列分组 | Pending |
 
 ---

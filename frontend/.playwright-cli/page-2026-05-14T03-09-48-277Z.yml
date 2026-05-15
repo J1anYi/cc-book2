@@ -1,0 +1,44 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - navigation [ref=e5]:
+      - link "📚 书库" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e7]:
+        - link "书库" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "上传" [ref=e9] [cursor=pointer]:
+          - /url: /upload
+        - link "管理" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - textbox "搜索书籍（标题、作者）..." [ref=e15]
+        - combobox [ref=e17] [cursor=pointer]:
+          - option "全部分类" [selected]
+      - generic [ref=e18]:
+        - heading "继续阅读" [level=2] [ref=e19]
+        - generic [ref=e21] [cursor=pointer]:
+          - generic [ref=e23]: 📖
+          - generic [ref=e24]:
+            - heading "eabb91b4-3f37-4bd3-ac70-1b0bbd10214d" [level=4] [ref=e25]
+            - paragraph [ref=e26]: Unknown
+            - generic [ref=e30]: 47%
+      - generic [ref=e31]:
+        - heading "书库" [level=2] [ref=e32]
+        - generic [ref=e33]:
+          - generic [ref=e34] [cursor=pointer]:
+            - button "ℹ️" [ref=e35]
+            - generic [ref=e38]: 📖
+            - generic [ref=e39]:
+              - heading "eabb91b4-3f37-4bd3-ac70-1b0bbd10214d" [level=3] [ref=e40]
+              - paragraph [ref=e41]: Unknown
+              - generic [ref=e43]: EPUB
+              - generic [ref=e46]: 47%
+          - generic [ref=e47] [cursor=pointer]:
+            - button "ℹ️" [ref=e48]
+            - generic [ref=e51]: 📖
+            - generic [ref=e52]:
+              - heading "cad93c97-17ba-4c3b-ac08-9595bbc4798d" [level=3] [ref=e53]
+              - paragraph [ref=e54]: Unknown
+              - generic [ref=e56]: EPUB

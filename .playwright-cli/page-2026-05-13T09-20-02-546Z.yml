@@ -1,0 +1,35 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - navigation [ref=e5]:
+      - link "📚 书库" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e7]:
+        - link "书库" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "上传" [ref=e9] [cursor=pointer]:
+          - /url: /upload
+        - link "管理" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - textbox "搜索书籍（标题、作者）..." [ref=e15]
+        - combobox [ref=e17] [cursor=pointer]:
+          - option "全部分类" [selected]
+      - generic [ref=e18]:
+        - heading "书库" [level=2] [ref=e19]
+        - generic [ref=e20]:
+          - generic [ref=e21] [cursor=pointer]:
+            - button "ℹ️" [ref=e22]
+            - generic [ref=e25]: 📖
+            - generic [ref=e26]:
+              - heading "eabb91b4-3f37-4bd3-ac70-1b0bbd10214d" [level=3] [ref=e27]
+              - paragraph [ref=e28]: Unknown
+              - generic [ref=e30]: EPUB
+          - generic [ref=e31] [cursor=pointer]:
+            - button "ℹ️" [ref=e32]
+            - generic [ref=e35]: 📖
+            - generic [ref=e36]:
+              - heading "cad93c97-17ba-4c3b-ac08-9595bbc4798d" [level=3] [ref=e37]
+              - paragraph [ref=e38]: Unknown
+              - generic [ref=e40]: EPUB

@@ -1,0 +1,22 @@
+[     180ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5173/favicon.ico:0
+[   91316ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5173/api/reading/progress:0
+[   91318ms] AxiosError: Request failed with status code 500
+    at settle (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1358:7)
+    at XMLHttpRequest.onloadend (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1742:7)
+[  351865ms] [LOG] locationChanged: {index: 0, href: cover1.html, start: epubcfi(/6/2!/4/1:0), end: epubcfi(/6/2!/4/1:1), percentage: 0} @ http://localhost:5173/src/components/EpubReader.vue?t=1778722768246:45
+[  351866ms] [LOG] location.start: epubcfi(/6/2!/4/1:0) @ http://localhost:5173/src/components/EpubReader.vue?t=1778722768246:46
+[  351866ms] [LOG] location.end: epubcfi(/6/2!/4/1:1) @ http://localhost:5173/src/components/EpubReader.vue?t=1778722768246:47
+[  373223ms] [LOG] initial location: {start: Object, end: Object, atStart: true} @ http://localhost:5173/src/components/EpubReader.vue?t=1778722789555:39
+[  373249ms] [LOG] locationChanged: {index: 0, href: cover1.html, start: epubcfi(/6/2!/4/1:0), end: epubcfi(/6/2!/4/1:1), percentage: 0} @ http://localhost:5173/src/components/EpubReader.vue?t=1778722789555:47
+[  373249ms] [LOG] location.start: epubcfi(/6/2!/4/1:0) @ http://localhost:5173/src/components/EpubReader.vue?t=1778722789555:48
+[  373249ms] [LOG] location.end: epubcfi(/6/2!/4/1:1) @ http://localhost:5173/src/components/EpubReader.vue?t=1778722789555:49
+[  384371ms] [LOG] initial location: {start: Object, end: Object, atStart: true} @ http://localhost:5173/src/components/EpubReader.vue?t=1778722789555:39
+[  384399ms] [LOG] locationChanged: {index: 0, href: cover1.html, start: epubcfi(/6/2!/4/1:0), end: epubcfi(/6/2!/4/1:1), percentage: 0} @ http://localhost:5173/src/components/EpubReader.vue?t=1778722789555:47
+[  384399ms] [LOG] location.start: epubcfi(/6/2!/4/1:0) @ http://localhost:5173/src/components/EpubReader.vue?t=1778722789555:48
+[  384399ms] [LOG] location.end: epubcfi(/6/2!/4/1:1) @ http://localhost:5173/src/components/EpubReader.vue?t=1778722789555:49
+[  447556ms] [LOG] initial location: {start: Object, end: Object, atStart: true} @ http://localhost:5173/src/components/EpubReader.vue?t=1778722863939:39
+[  447583ms] [LOG] locationChanged: {index: 0, href: cover1.html, start: epubcfi(/6/2!/4/1:0), end: epubcfi(/6/2!/4/1:1), percentage: 0} @ http://localhost:5173/src/components/EpubReader.vue?t=1778722863939:46
+[  459172ms] [LOG] initial location: {start: Object, end: Object, atStart: true} @ http://localhost:5173/src/components/EpubReader.vue?t=1778722863939:39
+[  459199ms] [LOG] locationChanged: {index: 0, href: cover1.html, start: epubcfi(/6/2!/4/1:0), end: epubcfi(/6/2!/4/1:1), percentage: 0} @ http://localhost:5173/src/components/EpubReader.vue?t=1778722863939:46
+[  512067ms] [LOG] locationChanged: {index: 1, href: text00000.html, start: epubcfi(/6/4!/4/2/1:0), end: epubcfi(/6/4!/4/4/34/2/1:4), percentage: 0} @ http://localhost:5173/src/components/EpubReader.vue?t=1778722863939:46
+[  598306ms] [LOG] locationChanged: {index: 1, href: text00000.html, start: epubcfi(/6/4!/4/2/1:0), end: epubcfi(/6/4!/4/4/34/2/1:4), percentage: 0} @ http://localhost:5173/src/components/EpubReader.vue?t=1778723014656:41

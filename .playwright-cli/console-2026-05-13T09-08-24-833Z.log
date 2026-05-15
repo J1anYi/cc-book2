@@ -1,0 +1,16 @@
+[     215ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5173/favicon.ico:0
+[   28885ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5173/api/reading/progress/2:0
+[  111901ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5173/api/books/2:0
+[  207939ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5173/api/reading/bookmarks/2:0
+[  207939ms] [WARNING] [Vue warn]: Unhandled error during execution of mounted hook 
+  at <Reader onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouterView> 
+  at <App> @ http://localhost:5173/node_modules/.vite/deps/chunk-SLZUSZ5I.js?v=d3f097ec:2214
+[  207940ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5173/api/files/META-INF/container.xml:0
+[  207940ms] AxiosError: Request failed with status code 404
+    at settle (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1358:7)
+    at XMLHttpRequest.onloadend (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1742:7)
+    at Axios.request (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:2398:41)
+    at async getBookmarks (http://localhost:5173/src/api/reading.ts:17:20)
+    at async loadBookmarks (http://localhost:5173/src/views/Reader.vue?t=1778660569155:29:25)
+    at async http://localhost:5173/src/views/Reader.vue?t=1778660569155:25:7

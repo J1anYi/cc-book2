@@ -1,0 +1,10 @@
+[     214ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5173/favicon.ico:0
+[  112828ms] [LOG] locationChanged event fired: {index: 772, href: text00771.html, start: epubcfi(/6/1546!/4/2/1:0), end: epubcfi(/6/1546!/4/18/1:53), percentage: 0} @ http://localhost:5173/src/components/EpubReader.vue?t=1778723920562:41
+[  112828ms] [LOG] location type: object @ http://localhost:5173/src/components/EpubReader.vue?t=1778723920562:42
+[  112828ms] [LOG] location.index: 772 type: number @ http://localhost:5173/src/components/EpubReader.vue?t=1778723920562:43
+[  125226ms] [LOG] locationChanged event fired: {index: 772, href: text00771.html, start: epubcfi(/6/1546!/4/2/1:0), end: epubcfi(/6/1546!/4/18/1:53), percentage: 0} @ http://localhost:5173/src/components/EpubReader.vue?t=1778723920562:41
+[  125226ms] [LOG] location type: object @ http://localhost:5173/src/components/EpubReader.vue?t=1778723920562:42
+[  125226ms] [LOG] location.index: 772 type: number @ http://localhost:5173/src/components/EpubReader.vue?t=1778723920562:43
+[  242044ms] [LOG] locationChanged event fired: {index: 772, href: text00771.html, start: epubcfi(/6/1546!/4/20/1:0), end: epubcfi(/6/1546!/4/34/1:92), percentage: 0} @ http://localhost:5173/src/components/EpubReader.vue?t=1778723920562:41
+[  242044ms] [LOG] location type: object @ http://localhost:5173/src/components/EpubReader.vue?t=1778723920562:42
+[  242044ms] [LOG] location.index: 772 type: number @ http://localhost:5173/src/components/EpubReader.vue?t=1778723920562:43

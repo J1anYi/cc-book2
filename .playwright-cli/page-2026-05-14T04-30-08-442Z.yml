@@ -1,0 +1,62 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - navigation [ref=e5]:
+      - link "📚 书库" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: 📚
+        - generic [ref=e8]: 书库
+      - generic [ref=e9]:
+        - link "📖 书库" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e11]: 📖
+          - generic [ref=e12]: 书库
+        - link "📤 上传" [ref=e13] [cursor=pointer]:
+          - /url: /upload
+          - generic [ref=e14]: 📤
+          - generic [ref=e15]: 上传
+        - link "⚙️ 管理" [ref=e16] [cursor=pointer]:
+          - /url: /admin
+          - generic [ref=e17]: ⚙️
+          - generic [ref=e18]: 管理
+        - button "☀️" [ref=e19] [cursor=pointer]:
+          - generic [ref=e20]: ☀️
+  - main [ref=e21]:
+    - generic [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic: 🔍
+          - textbox "搜索书籍（标题、作者）..." [ref=e25]
+        - combobox [ref=e27] [cursor=pointer]:
+          - option "全部分类" [selected]
+      - generic [ref=e28]:
+        - heading "📖 继续阅读" [level=2] [ref=e29]:
+          - generic [ref=e30]: 📖
+          - text: 继续阅读
+        - generic [ref=e32] [cursor=pointer]:
+          - generic [ref=e34]: 📖
+          - generic [ref=e35]:
+            - heading "eabb91b4-3f37-4bd3-ac70-1b0bbd10214d" [level=4] [ref=e36]
+            - paragraph [ref=e37]: Unknown
+            - generic [ref=e41]: 47%
+      - generic [ref=e42]:
+        - heading "📚 书库" [level=2] [ref=e43]:
+          - generic [ref=e44]: 📚
+          - text: 书库
+        - generic [ref=e45]:
+          - generic [ref=e46] [cursor=pointer]:
+            - button "ℹ️" [ref=e47]:
+              - generic [ref=e48]: ℹ️
+            - generic [ref=e51]: 📖
+            - generic [ref=e52]:
+              - heading "eabb91b4-3f37-4bd3-ac70-1b0bbd10214d" [level=3] [ref=e53]
+              - paragraph [ref=e54]: Unknown
+              - generic [ref=e56]: EPUB
+              - generic [ref=e60]: 47%
+          - generic [ref=e61] [cursor=pointer]:
+            - button "ℹ️" [ref=e62]:
+              - generic [ref=e63]: ℹ️
+            - generic [ref=e66]: 📖
+            - generic [ref=e67]:
+              - heading "cad93c97-17ba-4c3b-ac08-9595bbc4798d" [level=3] [ref=e68]
+              - paragraph [ref=e69]: Unknown
+              - generic [ref=e71]: EPUB

@@ -1,0 +1,5 @@
+[     164ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5173/favicon.ico:0
+[   28374ms] [LOG] Selection rect: DOMRect @ http://localhost:5173/src/components/EpubReader.vue?t=1778733308050:71
+[   28375ms] [LOG] Iframe rect: DOMRect @ http://localhost:5173/src/components/EpubReader.vue?t=1778733308050:72
+[   28375ms] [LOG] Container rect: DOMRect @ http://localhost:5173/src/components/EpubReader.vue?t=1778733308050:73
+[   28375ms] [LOG] Calculated position: {top: 377.125, left: 102.65625} @ http://localhost:5173/src/components/EpubReader.vue?t=1778733308050:76

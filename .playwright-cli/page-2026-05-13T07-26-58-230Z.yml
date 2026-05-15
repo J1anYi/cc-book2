@@ -1,0 +1,22 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - heading "📚 书籍观看系统" [level=1] [ref=e5]
+    - navigation [ref=e6]:
+      - link "上传" [ref=e7] [cursor=pointer]:
+        - /url: /
+      - text: "|"
+      - link "管理后台" [ref=e8] [cursor=pointer]:
+        - /url: /admin
+  - main [ref=e9]:
+    - generic [ref=e10]:
+      - heading "上传书籍" [level=2] [ref=e11]
+      - generic [ref=e12]:
+        - button "选择文件" [ref=e13] [cursor=pointer]
+        - paragraph [ref=e14]: 支持 EPUB, PDF, TXT 格式
+      - generic [ref=e17]:
+        - paragraph [ref=e18]: "已选择: 斗破苍穹（1至26卷全集）.epub"
+        - button "上传" [ref=e19]
+      - generic [ref=e20]: 上传失败
+      - generic [ref=e15]:
+        - heading "已上传书籍" [level=3] [ref=e16]
+        - list

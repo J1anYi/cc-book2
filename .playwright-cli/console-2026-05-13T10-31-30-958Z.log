@@ -1,0 +1,41 @@
+[     192ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5173/favicon.ico:0
+[   59566ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "new-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5173/admin:0
+[  427769ms] [LOG] Fetch status: 200 @ :4
+[  427896ms] [LOG] Blob size: 8616234 type: application/epub+zip @ :6
+[  729424ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5173/api/reading/progress:0
+[  729424ms] AxiosError: Request failed with status code 500
+    at settle (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1358:7)
+    at XMLHttpRequest.onloadend (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1742:7)
+[  745529ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5173/api/reading/progress:0
+[  745529ms] AxiosError: Request failed with status code 500
+    at settle (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1358:7)
+    at XMLHttpRequest.onloadend (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1742:7)
+[  761018ms] [WARNING] [Vue warn]: Unhandled error during execution of unmounted hook 
+  at <EpubReader key=0 bookId=2 fileUrl="/api/files/2"  ... > 
+  at <Reader onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouterView> 
+  at <App> @ http://localhost:5173/node_modules/.vite/deps/chunk-SLZUSZ5I.js?v=d3f097ec:2214
+[  761025ms] ReferenceError: blobUrl is not defined
+    at http://localhost:5173/src/components/EpubReader.vue?t=1778669036154:71:7
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SLZUSZ5I.js?v=d3f097ec:5281:40
+    at callWithErrorHandling (http://localhost:5173/node_modules/.vite/deps/chunk-SLZUSZ5I.js?v=d3f097ec:2362:19)
+    at callWithAsyncErrorHandling (http://localhost:5173/node_modules/.vite/deps/chunk-SLZUSZ5I.js?v=d3f097ec:2369:17)
+    at hook.__weh.hook.__weh (http://localhost:5173/node_modules/.vite/deps/chunk-SLZUSZ5I.js?v=d3f097ec:5261:19)
+    at flushPostFlushCbs (http://localhost:5173/node_modules/.vite/deps/chunk-SLZUSZ5I.js?v=d3f097ec:2547:28)
+    at flushJobs (http://localhost:5173/node_modules/.vite/deps/chunk-SLZUSZ5I.js?v=d3f097ec:2589:5)
+[  772095ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5173/api/reading/progress:0
+[  772095ms] AxiosError: Request failed with status code 500
+    at settle (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1358:7)
+    at XMLHttpRequest.onloadend (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1742:7)
+[ 1070397ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5173/api/reading/progress:0
+[ 1070399ms] AxiosError: Request failed with status code 500
+    at settle (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1358:7)
+    at XMLHttpRequest.onloadend (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1742:7)
+[ 1255915ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5173/api/reading/progress:0
+[ 1255916ms] AxiosError: Request failed with status code 500
+    at settle (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1358:7)
+    at XMLHttpRequest.onloadend (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1742:7)
+[ 1289048ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5173/api/reading/progress:0
+[ 1289049ms] AxiosError: Request failed with status code 500
+    at settle (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1358:7)
+    at XMLHttpRequest.onloadend (http://localhost:5173/node_modules/.vite/deps/axios.js?v=83098a4b:1742:7)

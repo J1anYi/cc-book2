@@ -1,0 +1,28 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - navigation [ref=e5]:
+      - link "📚 书库" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e7]:
+        - link "书库" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "上传" [ref=e9] [cursor=pointer]:
+          - /url: /upload
+        - link "管理" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - link "← 返回" [ref=e14] [cursor=pointer]:
+          - /url: /
+        - heading "eabb91b4-3f37-4bd3-ac70-1b0bbd10214d" [level=2] [ref=e15]
+        - generic [ref=e16]:
+          - button "书签" [ref=e17] [cursor=pointer]
+          - button "笔记" [ref=e18] [cursor=pointer]
+      - generic [ref=e20]:
+        - iframe [ref=e30]:
+          - img [ref=f11e2]
+        - generic [ref=e22]:
+          - button "上一页" [disabled] [ref=e23]
+          - generic [ref=e24]: 第 1 页 / 共 1641 页
+          - button "下一页" [ref=e25] [cursor=pointer]

@@ -1,0 +1,51 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - navigation [ref=e5]:
+      - link "📚 书库" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e7]:
+        - link "书库" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "上传" [ref=e9] [cursor=pointer]:
+          - /url: /upload
+        - link "管理" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+  - main [ref=e11]:
+    - generic [ref=e42]:
+      - link "← 返回书库" [ref=e43] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e44]:
+        - generic [ref=e47]: 📖
+        - generic [ref=e48]:
+          - heading "eabb91b4-3f37-4bd3-ac70-1b0bbd10214d" [level=1] [ref=e49]
+          - paragraph [ref=e50]: Unknown
+          - generic [ref=e51]:
+            - generic [ref=e52]:
+              - strong [ref=e53]: "文件类型:"
+              - text: EPUB
+            - generic [ref=e54]:
+              - strong [ref=e55]: "分类:"
+              - text: 未分类
+            - generic [ref=e56]:
+              - strong [ref=e57]: "标签:"
+              - text: 无
+            - generic [ref=e58]:
+              - strong [ref=e59]: "上传时间:"
+              - text: 2026年5月13日 07:48
+      - generic [ref=e60]:
+        - heading "阅读进度" [level=2] [ref=e61]
+        - paragraph [ref=e63]: 尚未开始阅读
+      - link "开始阅读" [ref=e65] [cursor=pointer]:
+        - /url: /read/2
+      - generic [ref=e66]:
+        - heading "编辑信息" [level=2] [ref=e67]
+        - generic [ref=e68]:
+          - generic [ref=e69]:
+            - generic [ref=e70]: 分类
+            - combobox "分类" [ref=e71]:
+              - option "未分类" [selected]
+          - generic [ref=e72]:
+            - generic [ref=e73]: 标签
+            - textbox "标签" [ref=e74]:
+              - /placeholder: 多个标签用逗号分隔
+          - button "保存修改" [ref=e75] [cursor=pointer]

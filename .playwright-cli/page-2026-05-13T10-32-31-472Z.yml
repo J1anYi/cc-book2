@@ -1,0 +1,18 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - navigation [ref=e5]:
+      - link "📚 书库" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e7]:
+        - link "书库" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "上传" [ref=e9] [cursor=pointer]:
+          - /url: /upload
+        - link "管理" [active] [ref=e10] [cursor=pointer]:
+          - /url: /admin
+  - main [ref=e11]:
+    - generic [ref=e42]:
+      - heading "管理员登录" [level=2] [ref=e43]
+      - generic [ref=e44]:
+        - textbox "请输入密码" [ref=e45]
+        - button "登录" [ref=e46] [cursor=pointer]

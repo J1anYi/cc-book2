@@ -1,0 +1,27 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - navigation [ref=e5]:
+      - link "📚 书库" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e7]:
+        - link "书库" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "上传" [active] [ref=e9] [cursor=pointer]:
+          - /url: /upload
+        - link "管理" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+  - main [ref=e11]:
+    - generic [ref=e53]:
+      - heading "上传书籍" [level=2] [ref=e54]
+      - generic [ref=e55]:
+        - button "选择文件" [ref=e56] [cursor=pointer]
+        - paragraph [ref=e57]: 支持 EPUB, PDF, TXT 格式
+      - generic [ref=e58]:
+        - heading "已上传书籍" [level=3] [ref=e59]
+        - list [ref=e60]:
+          - listitem [ref=e61]:
+            - strong [ref=e62]: eabb91b4-3f37-4bd3-ac70-1b0bbd10214d
+            - text: "- Unknown (epub)"
+          - listitem [ref=e63]:
+            - strong [ref=e64]: cad93c97-17ba-4c3b-ac08-9595bbc4798d
+            - text: "- Unknown (epub)"

@@ -116,9 +116,11 @@ ALTER TABLE books ADD COLUMN reading_status TEXT DEFAULT 'want_to_read'
 
 ---
 
-## Phase 16: 多标签系统
+## Phase 16: 多标签系统 ✓ COMPLETE
 
 **Goal:** 实现结构化标签和多标签筛选
+**Status:** ✅ Complete (2026-05-15)
+**Plans:** 16-01 (Backend), 16-02 (Frontend)
 
 ### Requirements
 

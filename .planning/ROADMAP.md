@@ -77,10 +77,10 @@ CREATE TABLE book_collections (
 
 ---
 
-## Phase 15: 阅读状态
+## Phase 15: 阅读状态 ✓ COMPLETE
 
 **Goal:** 实现三状态追踪和自动状态更新
-**Status:** 🔄 In Progress
+**Status:** ✅ Complete (2026-05-15)
 **Plans:** 15-01 (Backend), 15-02 (Frontend)
 
 ### Requirements

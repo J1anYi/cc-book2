@@ -3,28 +3,30 @@ gsd_state_version: 1.0
 milestone: v0.6
 milestone_name: 书库管理增强
 status: in_progress
-last_updated: "2026-05-14T11:10:00.000Z"
+last_updated: "2026-05-15T12:00:00.000Z"
+last_activity: 2026-05-15 — Phase 15 completed
 progress:
   total_phases: 4
-  completed_phases: 0
-  total_plans: 2
-  completed_plans: 2
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 4
+  percent: 50
 ---
 
 # State — 书籍观看系统
 
 ## Current Position
 
-Phase: 14 - 收藏夹系统
-Plan: 14-02 (complete)
-Status: Phase 14 complete
-Last activity: 2026-05-14 — Plan 14-02 completed
+Phase: 15 - 阅读状态
+Plan: 15-02 (complete)
+Status: Phase 15 complete
+Last activity: 2026-05-15 — Phase 15 completed
 
 ---
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-14)
+See: .planning/PROJECT.md (updated 2026-05-15)
 
 **Core value:** 上传书籍 → 在线阅读 → 管理收藏
 **Current focus:** v0.6 书库管理增强 (in_progress)
@@ -36,7 +38,7 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 | Phase | Name | Status |
 |-------|------|--------|
 | 14 | 收藏夹系统 | Complete (2/2 plans) |
-| 15 | 阅读状态 | Pending |
+| 15 | 阅读状态 | Complete (2/2 plans) |
 | 16 | 多标签系统 | Pending |
 | 17 | 系列分组 | Pending |
 
@@ -56,20 +58,19 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Decisions Made
 
-1. **Collection System Architecture** - Use junction table (book_collections) for many-to-many relationship instead of JSON array
+1. **Collection System Architecture** - Use junction table (book_collections) for many-to-many relationship
 2. **CASCADE DELETE** - Automatic cleanup of book_collections entries when collection is deleted
-3. **Error Handling** - 409 Conflict for duplicate collection names, idempotent book assignment
-4. **Server-side Filtering** - Collection filter uses server API call for scalability
-5. **Toggle Chip UI** - Simple click-to-toggle pattern for collection assignment
+3. **Reading Status Default** - New books default to 'want_to_read' status
+4. **Auto-Status Update** - Opening a 'want_to_read' book automatically changes to 'reading'
+5. **Status Filter Combined** - Status filter works with collection filter (AND logic)
 
 ---
 
 ## Session Info
 
-Last session: 2026-05-14T11:10:00.000Z
-Stopped at: Completed Phase 14 (14-02-SUMMARY.md)
-Resume file: .planning/phases/15-reading-status/ (next phase)
+Last session: 2026-05-15T12:00:00.000Z
+Resume file: None
 
 ---
 
-*Last updated: 2026-05-14*
+*Last updated: 2026-05-15*

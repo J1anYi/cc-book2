@@ -2,25 +2,25 @@
 gsd_state_version: 1.0
 milestone: v0.6
 milestone_name: 书库管理增强
-status: in_progress
-last_updated: "2026-05-15T15:00:00.000Z"
-last_activity: 2026-05-15 — Phase 16 completed
+status: complete
+last_updated: "2026-05-15T16:00:00.000Z"
+last_activity: 2026-05-15 — Phase 17 completed, milestone v0.6 done
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
-  percent: 75
+  completed_phases: 4
+  total_plans: 8
+  completed_plans: 8
+  percent: 100
 ---
 
 # State — 书籍观看系统
 
 ## Current Position
 
-Phase: 16 - 多标签系统
-Plan: 16-02 (complete)
-Status: Phase 16 complete - Multi-tag system fully implemented
-Last activity: 2026-05-15 — Phase 16 completed
+Phase: 17 - 系列分组
+Plan: 17-02 (complete)
+Status: Phase 17 complete - Milestone v0.6 COMPLETE
+Last activity: 2026-05-15 — Phase 17 completed
 
 ---
 
@@ -40,7 +40,7 @@ See: .planning/PROJECT.md (updated 2026-05-15)
 | 14 | 收藏夹系统 | Complete (2/2 plans) |
 | 15 | 阅读状态 | Complete (2/2 plans) |
 | 16 | 多标签系统 | Complete (2/2 plans) |
-| 17 | 系列分组 | Pending |
+| 17 | 系列分组 | Complete (2/2 plans) |
 
 ---
 
@@ -68,6 +68,10 @@ See: .planning/PROJECT.md (updated 2026-05-15)
 8. **Tag Usage Counts** - Track and display how many books use each tag
 9. **Tag Color Support** - Tags can have optional colors for visual distinction
 10. **Set for Selected Tags** - Use Set<number> in frontend to prevent duplicate selections
+11. **Series One-to-Many** - Direct FK columns (series_id, series_index) instead of junction table
+12. **REAL for series_index** - Allows fractional values for O(1) reordering
+13. **ON DELETE SET NULL** - Books keep series_id cleared when series is deleted
+14. **Auto-Detection Optional** - SERI-04 returns preview for user confirmation
 
 ---
 

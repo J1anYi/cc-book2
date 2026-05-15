@@ -174,9 +174,11 @@ CREATE TABLE book_tags (
 
 ---
 
-## Phase 17: 系列分组
+## Phase 17: 系列分组 ✓ COMPLETE
 
 **Goal:** 实现系列管理和智能检测
+**Status:** ✅ Complete (2026-05-15)
+**Plans:** 17-01 (Backend), 17-02 (Frontend)
 
 ### Requirements
 

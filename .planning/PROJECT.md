@@ -6,15 +6,13 @@
 
 **核心价值：** 上传书籍 → 在线阅读 → 管理收藏
 
-## Current Milestone: v0.6 书库管理增强
+## Current Milestone: v0.7 (待规划)
 
-**Goal:** 提升书库组织能力 - 分类、标签、阅读状态
+**Status:** Ready for planning
 
-**Target features:**
-- 分类/收藏夹系统（优先）
-- 多标签系统
-- 阅读状态追踪（在读/想读/已读）
-- 智能分组（按系列/作者）
+**Previous Milestone:** v0.6 书库管理增强 ✅ COMPLETE (2026-05-15)
+
+See: `.planning/milestones/v0.6-MILESTONE.md` for archive
 
 ## Requirements
 
@@ -65,17 +63,19 @@
 ## Evolution
 
 <details>
-<summary>v0.6 (2026-05-14)</summary>
+<summary>v0.6 (2026-05-15) ✅ COMPLETE</summary>
 
 **Goal:** 书库管理增强
 
 **Focus:**
-- 分类/收藏夹系统
-- 多标签系统
-- 阅读状态追踪
-- 智能分组
+- 收藏夹系统 (Phase 14)
+- 阅读状态 (Phase 15)
+- 多标签系统 (Phase 16)
+- 系列分组 (Phase 17)
 
-**Stats:** Planning in progress
+**Stats:** 4 phases, 20 requirements, ~50 commits, 100% coverage
+
+**Archive:** `.planning/milestones/v0.6-MILESTONE.md`
 
 </details>
 

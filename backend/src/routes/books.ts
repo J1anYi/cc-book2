@@ -6,8 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { db } from '../models/book.js';
 import { extractMetadata } from '../utils/metadata.js';
 import { authMiddleware } from '../middleware/auth.js';
-import { validateQuery, validateParams } from '../middleware/validate.js';
-import { bookQuerySchema, idParamSchema } from '../validators/schemas.js';
+import { validateQuery, validateParams, validateBody } from '../middleware/validate.js';
+import { bookQuerySchema, idParamSchema, readingStatusSchema } from '../validators/schemas.js';
 import { validateExtension, validateFileType } from '../utils/fileValidator.js';
 
 const router = Router();
@@ -67,7 +67,7 @@ router.post('/', upload.single('book'), async (req, res) => {
 });
 
 router.get('/', validateQuery(bookQuerySchema), (req, res) => {
-  const { page = 1, limit = 20, search, collection_id } = req.query as any;
+  const { page = 1, limit = 20, search, collection_id, status } = req.query as any;
   const offset = (page - 1) * limit;
   const database = db();
 
@@ -86,6 +86,11 @@ router.get('/', validateQuery(bookQuerySchema), (req, res) => {
     params.push(`%${search}%`, `%${search}%`);
   }
 
+  if (status) {
+    conditions.push('b.reading_status = ?');
+    params.push(status);
+  }
+
   if (conditions.length > 0) {
     sql += ' WHERE ' + conditions.join(' AND ');
   }
@@ -98,22 +103,26 @@ router.get('/', validateQuery(bookQuerySchema), (req, res) => {
   // Count query with same filters
   let countSql = 'SELECT COUNT(DISTINCT b.id) as total FROM books b';
   const countParams: any[] = [];
+  const countConditions: string[] = [];
 
   if (collection_id) {
     countSql += ' JOIN book_collections bc ON b.id = bc.book_id';
+    countConditions.push('bc.collection_id = ?');
     countParams.push(collection_id);
   }
 
   if (search) {
-    const searchCondition = '(b.title LIKE ? OR b.author LIKE ?)';
-    if (collection_id) {
-      countSql += ' WHERE bc.collection_id = ? AND ' + searchCondition;
-    } else {
-      countSql += ' WHERE ' + searchCondition;
-    }
+    countConditions.push('(b.title LIKE ? OR b.author LIKE ?)');
     countParams.push(`%${search}%`, `%${search}%`);
-  } else if (collection_id) {
-    countSql += ' WHERE bc.collection_id = ?';
+  }
+
+  if (status) {
+    countConditions.push('b.reading_status = ?');
+    countParams.push(status);
+  }
+
+  if (countConditions.length > 0) {
+    countSql += ' WHERE ' + countConditions.join(' AND ');
   }
 
   const totalResult = database.get(countSql, countParams) as { total: number };
@@ -186,6 +195,29 @@ router.patch('/:id', authMiddleware, validateParams(idParamSchema), async (req, 
   } catch (error) {
     console.error('Update error:', error);
     res.status(500).json({ error: 'Failed to update book' });
+  }
+});
+
+// Update reading status
+router.put('/:id/status', validateParams(idParamSchema), validateBody(readingStatusSchema), async (req, res) => {
+  try {
+    const { id } = req.params as any;
+    const { status } = req.body;
+
+    const database = db();
+    const book = database.get('SELECT * FROM books WHERE id = ?', [id]);
+    if (!book) {
+      return res.status(404).json({ error: '书籍不存在' });
+    }
+
+    database.run('UPDATE books SET reading_status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [status, id]);
+    await database.save();
+
+    const updatedBook = database.get('SELECT * FROM books WHERE id = ?', [id]);
+    res.json(updatedBook);
+  } catch (error) {
+    console.error('Update reading status error:', error);
+    res.status(500).json({ error: '更新阅读状态失败' });
   }
 });
 

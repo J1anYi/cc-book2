@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { getBook, type Book } from '../api/books';
+import { getBook, updateReadingStatus, type Book } from '../api/books';
 import { getFileUrl, getBookmarks, addBookmark, deleteBookmark, getNotes, addNote, deleteNote } from '../api/reading';
 import { getHighlights, deleteHighlight, type Highlight } from '../api/highlights';
 import EpubReader from '../components/EpubReader.vue';
@@ -149,6 +149,18 @@ const highlightColors: Record<string, string> = {
 
 onMounted(async () => {
   book.value = await getBook(bookId.value);
+
+  // Auto-update reading status from 'want_to_read' to 'reading'
+  if (book.value?.reading_status === 'want_to_read') {
+    try {
+      await updateReadingStatus(bookId.value, 'reading');
+      book.value.reading_status = 'reading';
+    } catch (error) {
+      console.error('Failed to update reading status:', error);
+      // Silent failure - don't block reading
+    }
+  }
+
   await loadHighlights();
   await loadBookmarks();
   await loadNotes();

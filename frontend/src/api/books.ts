@@ -22,6 +22,7 @@ export interface Book {
   cover_path: string | null;
   category: string | null;
   tags: string | null;
+  reading_status: string;
   created_at: string;
 }
 
@@ -44,10 +45,11 @@ export async function uploadBook(file: File): Promise<Book> {
   return response.data;
 }
 
-export async function getBooks(search?: string, collectionId?: number): Promise<Book[]> {
+export async function getBooks(search?: string, collectionId?: number, status?: string): Promise<Book[]> {
   const params: any = {};
   if (search) params.search = search;
   if (collectionId) params.collection_id = collectionId;
+  if (status) params.status = status;
   const response = await api.get('/books', { params });
   return response.data.data || response.data;
 }
@@ -63,6 +65,14 @@ export async function deleteBook(id: number): Promise<void> {
 
 export async function updateBook(id: number, data: { category?: string; tags?: string }): Promise<Book> {
   const response = await api.patch(`/books/${id}`, data);
+  return response.data;
+}
+
+export async function updateReadingStatus(
+  id: number,
+  status: 'want_to_read' | 'reading' | 'read'
+): Promise<Book> {
+  const response = await api.put(`/books/${id}/status`, { status });
   return response.data;
 }
 

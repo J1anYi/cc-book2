@@ -196,6 +196,16 @@ async function initDatabase(): Promise<SQLiteDatabase> {
     )
   `);
 
+  // Series table for organizing books into series
+  dbInstance.exec(`
+    CREATE TABLE IF NOT EXISTS series (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
   // Metadata table for migration tracking
   dbInstance.exec(`
     CREATE TABLE IF NOT EXISTS metadata (
@@ -211,6 +221,18 @@ async function initDatabase(): Promise<SQLiteDatabase> {
     dbInstance.exec(`ALTER TABLE books ADD COLUMN reading_status TEXT DEFAULT 'want_to_read'`);
   }
 
+  // Add series_id column to books table if it doesn't exist
+  const hasSeriesId = columns.some((col: any) => col.name === 'series_id');
+  if (!hasSeriesId) {
+    dbInstance.exec(`ALTER TABLE books ADD COLUMN series_id INTEGER REFERENCES series(id) ON DELETE SET NULL`);
+  }
+
+  // Add series_index column to books table if it doesn't exist
+  const hasSeriesIndex = columns.some((col: any) => col.name === 'series_index');
+  if (!hasSeriesIndex) {
+    dbInstance.exec(`ALTER TABLE books ADD COLUMN series_index REAL`);
+  }
+
   // Create indexes
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_title ON books(title)`);
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_author ON books(author)`);
@@ -218,6 +240,7 @@ async function initDatabase(): Promise<SQLiteDatabase> {
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_collections_collection ON book_collections(collection_id)`);
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_tags_book ON book_tags(book_id)`);
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_tags_tag ON book_tags(tag_id)`);
+  dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_series ON books(series_id)`);
 
   // Run tag data migration from books.tags TEXT field
   const migrationComplete = dbInstance.get(

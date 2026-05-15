@@ -80,6 +80,8 @@ CREATE TABLE book_collections (
 ## Phase 15: 阅读状态
 
 **Goal:** 实现三状态追踪和自动状态更新
+**Status:** 🔄 In Progress
+**Plans:** 15-01 (Backend), 15-02 (Frontend)
 
 ### Requirements
 
@@ -243,4 +245,4 @@ Phase 14 → Phase 15 → Phase 16 → Phase 17
 
 ---
 
-*Last updated: 2026-05-14*
+*Last updated: 2026-05-15*

@@ -146,6 +146,30 @@
             </div>
             <p class="collection-hint">点击添加或移除收藏夹</p>
           </div>
+          <div class="form-group">
+            <label>系列</label>
+            <div class="series-selector">
+              <select v-model="selectedSeriesId" @change="handleSeriesChange">
+                <option :value="null">未分配系列</option>
+                <option v-for="ser in seriesList" :key="ser.id" :value="ser.id">
+                  {{ ser.name }}
+                </option>
+              </select>
+              <div v-if="selectedSeriesId" class="series-index-input">
+                <label for="seriesIndex">序号:</label>
+                <input
+                  id="seriesIndex"
+                  type="number"
+                  v-model.number="seriesIndex"
+                  min="1"
+                  step="1"
+                />
+              </div>
+            </div>
+            <p v-if="book?.series_id" class="series-hint">
+              当前在系列中排序: 第 {{ book.series_index || '?' }} 位
+            </p>
+          </div>
           <button
             @click="saveEdit"
             :disabled="saving"
@@ -163,12 +187,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { getBook, getCategories, updateBook, type Book, type Category } from '../api/books';
 import { getCollections, addBookToCollection, removeBookFromCollection, getBookCollections, type Collection } from '../api/collections';
 import { getProgress, type ReadingProgress } from '../api/reading';
 import { getTags, getBookTags, setBookTags, type Tag } from '../api/tags';
+import { getSeries, addBookToSeries, removeBookFromSeries, type Series } from '../api/series';
 
 const route = useRoute();
 const bookId = computed(() => Number(route.params.id));
@@ -190,6 +215,10 @@ const editForm = ref({
 const saving = ref(false);
 const saveMessage = ref('');
 const saveMessageType = ref<'success' | 'error'>('success');
+
+const seriesList = ref<Series[]>([]);
+const selectedSeriesId = ref<number | null>(null);
+const seriesIndex = ref<number | null>(null);
 
 const fileTypeIcon = computed(() => {
   const type = book.value?.file_type.toLowerCase() || '';
@@ -222,14 +251,15 @@ async function loadBook() {
     loading.value = true;
     error.value = '';
 
-    const [bookData, progressData, categoriesData, collectionsData, bookCollectionIds, tagsData, bookTagsData] = await Promise.all([
+    const [bookData, progressData, categoriesData, collectionsData, bookCollectionIds, tagsData, bookTagsData, seriesData] = await Promise.all([
       getBook(bookId.value),
       getProgress(bookId.value).catch(() => null),
       getCategories(),
       getCollections(),
       getBookCollections(bookId.value).catch(() => []),
       getTags(),
-      getBookTags(bookId.value).catch(() => [])
+      getBookTags(bookId.value).catch(() => []),
+      getSeries()
     ]);
 
     book.value = bookData;
@@ -239,6 +269,9 @@ async function loadBook() {
     bookCollections.value = new Set(bookCollectionIds);
     allTags.value = tagsData;
     bookTags.value = bookTagsData;
+    seriesList.value = seriesData;
+    selectedSeriesId.value = bookData.series_id;
+    seriesIndex.value = bookData.series_index;
 
     editForm.value = {
       category: bookData.category || '',
@@ -318,6 +351,51 @@ async function saveEdit() {
     saving.value = false;
   }
 }
+
+async function handleSeriesChange() {
+  if (!book.value) return;
+
+  try {
+    if (selectedSeriesId.value === null) {
+      // Remove from series
+      if (book.value.series_id) {
+        await removeBookFromSeries(book.value.series_id, book.value.id);
+      }
+      seriesIndex.value = null;
+    } else {
+      // Add to series (index will be auto-calculated if not set)
+      const updated = await addBookToSeries(
+        selectedSeriesId.value,
+        book.value.id,
+        seriesIndex.value || undefined
+      );
+      seriesIndex.value = updated.series_index;
+    }
+
+    // Refresh series list to update book counts
+    const seriesData = await getSeries();
+    seriesList.value = seriesData;
+
+    // Refresh book
+    const bookData = await getBook(bookId.value);
+    book.value = bookData;
+  } catch (error) {
+    console.error('Failed to update series:', error);
+  }
+}
+
+watch(seriesIndex, async (newIndex, oldIndex) => {
+  // Only update if index changed and book is in a series
+  if (selectedSeriesId.value && newIndex !== oldIndex && newIndex !== null && book.value) {
+    try {
+      await addBookToSeries(selectedSeriesId.value, book.value.id, newIndex);
+      const bookData = await getBook(bookId.value);
+      book.value = bookData;
+    } catch (error) {
+      console.error('Failed to update series index:', error);
+    }
+  }
+});
 
 onMounted(() => {
   loadBook();
@@ -640,6 +718,63 @@ onMounted(() => {
 }
 
 .collection-hint {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  margin-top: var(--spacing-2);
+}
+
+/* Series Selector */
+.series-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.series-selector select {
+  padding: var(--spacing-3);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.series-selector select:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 4px var(--color-primary-100);
+}
+
+.series-index-input {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.series-index-input label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.series-index-input input {
+  width: 80px;
+  padding: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.series-index-input input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+}
+
+.series-hint {
   font-size: var(--font-size-xs);
   color: var(--text-tertiary);
   margin-top: var(--spacing-2);

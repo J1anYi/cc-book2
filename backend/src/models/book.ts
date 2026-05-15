@@ -174,6 +174,13 @@ async function initDatabase(): Promise<SQLiteDatabase> {
     )
   `);
 
+  // Add reading_status column to books table if it doesn't exist
+  const columns = dbInstance.all("PRAGMA table_info(books)");
+  const hasReadingStatus = columns.some((col: any) => col.name === 'reading_status');
+  if (!hasReadingStatus) {
+    dbInstance.exec(`ALTER TABLE books ADD COLUMN reading_status TEXT DEFAULT 'want_to_read'`);
+  }
+
   // Create indexes
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_title ON books(title)`);
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_books_author ON books(author)`);

@@ -255,8 +255,14 @@ async function initDatabase(): Promise<SQLiteDatabase> {
             [book.id, tag.id]
           );
         } catch (e: any) {
-          // Ignore duplicate key error
-          if (!e.message?.includes('CONSTRAINT')) throw e;
+          // Only ignore unique constraint violations - everything else is critical
+          if (e.code === 'SQLITE_CONSTRAINT' || e.message?.includes('UNIQUE constraint failed') || e.message?.includes('PRIMARY KEY constraint failed')) {
+            // Already exists - this is expected and safe to ignore
+            continue;
+          }
+          // Log critical error with context before re-throwing
+          console.error(`Migration failed for book ${book.id}, tag ${tag.id}:`, e);
+          throw e;
         }
       }
     }

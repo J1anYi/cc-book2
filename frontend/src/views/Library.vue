@@ -37,6 +37,33 @@
       </div>
     </div>
 
+    <!-- Tag Filter -->
+    <div class="tag-filter-box">
+      <div class="tag-filter-header">
+        <span>标签筛选</span>
+        <button
+          @click="toggleTagMode"
+          :class="['mode-toggle', { active: tagFilterMode === 'AND' }]"
+        >
+          {{ tagFilterMode }}
+        </button>
+      </div>
+      <div class="tag-chips">
+        <button
+          v-for="tag in tags"
+          :key="tag.id"
+          :class="['tag-chip', { active: selectedTags.has(tag.id) }]"
+          :style="{ borderColor: tag.color || 'var(--border-light)' }"
+          @click="toggleTag(tag.id)"
+        >
+          {{ tag.name }} ({{ tag.usage_count }})
+        </button>
+      </div>
+      <p v-if="selectedTags.size > 0" class="tag-hint">
+        已选择 {{ selectedTags.size }} 个标签 ({{ tagFilterMode === 'AND' ? '同时满足' : '满足任一' }})
+      </p>
+    </div>
+
     <!-- Continue Reading Section -->
     <section v-if="recentBooks.length > 0" class="continue-reading">
       <h2>
@@ -100,6 +127,7 @@ import BookCard from '../components/BookCard.vue';
 import { getBooks, getCategories, type Book, type Category } from '../api/books';
 import { getCollections, type Collection } from '../api/collections';
 import { getReadingHistory } from '../api/reading';
+import { getTags, type Tag } from '../api/tags';
 
 const router = useRouter();
 
@@ -111,6 +139,9 @@ const searchQuery = ref('');
 const selectedCategory = ref('');
 const selectedCollection = ref<number | null>(null);
 const selectedStatus = ref<string | null>(null);
+const tags = ref<Tag[]>([]);
+const selectedTags = ref<Set<number>>(new Set());
+const tagFilterMode = ref<'AND' | 'OR'>('OR');
 
 const recentBooks = computed(() => {
   return readingHistory.value
@@ -159,17 +190,51 @@ function goToReader(bookId: number) {
   router.push(`/read/${bookId}`);
 }
 
+function toggleTag(tagId: number) {
+  if (selectedTags.value.has(tagId)) {
+    selectedTags.value.delete(tagId);
+  } else {
+    selectedTags.value.add(tagId);
+  }
+  handleTagChange();
+}
+
+async function handleTagChange() {
+  try {
+    const tagIds = Array.from(selectedTags.value).join(',');
+    const booksData = await getBooks(
+      undefined,
+      selectedCollection.value || undefined,
+      selectedStatus.value || undefined,
+      tagIds || undefined,
+      tagFilterMode.value
+    );
+    books.value = booksData;
+  } catch (error) {
+    console.error('Failed to filter by tags:', error);
+  }
+}
+
+function toggleTagMode() {
+  tagFilterMode.value = tagFilterMode.value === 'AND' ? 'OR' : 'AND';
+  if (selectedTags.value.size > 0) {
+    handleTagChange();
+  }
+}
+
 async function loadData() {
   try {
-    const [booksData, categoriesData, collectionsData, historyData] = await Promise.all([
+    const [booksData, categoriesData, collectionsData, tagsData, historyData] = await Promise.all([
       getBooks(),
       getCategories(),
       getCollections(),
+      getTags(),
       getReadingHistory()
     ]);
     books.value = booksData;
     categories.value = categoriesData;
     collections.value = collectionsData;
+    tags.value = tagsData;
     readingHistory.value = historyData;
   } catch (error) {
     console.error('Failed to load library data:', error);
@@ -178,13 +243,15 @@ async function loadData() {
 
 async function handleCollectionChange() {
   try {
-    if (selectedCollection.value) {
-      const booksData = await getBooks(undefined, selectedCollection.value, selectedStatus.value || undefined);
-      books.value = booksData;
-    } else {
-      const booksData = await getBooks(undefined, undefined, selectedStatus.value || undefined);
-      books.value = booksData;
-    }
+    const tagIds = Array.from(selectedTags.value).join(',');
+    const booksData = await getBooks(
+      undefined,
+      selectedCollection.value,
+      selectedStatus.value || undefined,
+      tagIds || undefined,
+      tagFilterMode.value
+    );
+    books.value = booksData;
   } catch (error) {
     console.error('Failed to filter by collection:', error);
   }
@@ -192,7 +259,14 @@ async function handleCollectionChange() {
 
 async function handleStatusChange() {
   try {
-    const booksData = await getBooks(undefined, selectedCollection.value || undefined, selectedStatus.value || undefined);
+    const tagIds = Array.from(selectedTags.value).join(',');
+    const booksData = await getBooks(
+      undefined,
+      selectedCollection.value || undefined,
+      selectedStatus.value,
+      tagIds || undefined,
+      tagFilterMode.value
+    );
     books.value = booksData;
   } catch (error) {
     console.error('Failed to filter by status:', error);
@@ -269,6 +343,78 @@ onMounted(() => {
   outline: none;
   border-color: var(--color-primary-500);
   box-shadow: var(--shadow-md);
+}
+
+/* Tag Filter */
+.tag-filter-box {
+  margin-top: var(--spacing-3);
+  padding: var(--spacing-3);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+}
+
+.tag-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.mode-toggle {
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mode-toggle:hover {
+  background: var(--color-primary-100);
+}
+
+.mode-toggle.active {
+  background: var(--color-primary-500);
+  color: white;
+  border-color: var(--color-primary-500);
+}
+
+.tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  background: var(--bg-primary);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tag-chip:hover {
+  background: var(--bg-tertiary);
+}
+
+.tag-chip.active {
+  background: var(--color-primary-100);
+  border-color: var(--color-primary-500);
+  color: var(--color-primary-700);
+}
+
+.tag-hint {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  margin-top: var(--spacing-2);
 }
 
 /* Continue Reading Section */

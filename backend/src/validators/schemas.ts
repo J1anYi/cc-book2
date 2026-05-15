@@ -21,6 +21,13 @@ export const collectionSchema = z.object({
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$|^$/, '颜色格式无效').optional(),
 });
 
+// Reading status schema
+export const readingStatusSchema = z.object({
+  status: z.enum(['want_to_read', 'reading', 'read'], {
+    error: '阅读状态无效',
+  }),
+});
+
 // Reading progress schema
 export const progressSchema = z.object({
   progress: z.number().min(0).max(1),
@@ -53,6 +60,7 @@ export const bookQuerySchema = z.object({
   search: z.string().max(200).optional(),
   category: z.coerce.number().int().positive().optional(),
   collection_id: z.coerce.number().int().positive().optional(),
+  status: z.enum(['want_to_read', 'reading', 'read']).optional(),
 });
 
 // ID parameter schema

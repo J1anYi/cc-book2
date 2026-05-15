@@ -42,7 +42,7 @@ router.post('/', upload.single('book'), async (req, res) => {
     const ext = path.extname(req.file.originalname).toLowerCase();
     const fileBuffer = await fs.readFile(req.file.path);
     const validation = await validateFileType(fileBuffer, ext);
-    
+
     if (!validation.valid) {
       await fs.unlink(req.file.path);
       return res.status(400).json({ error: 'Invalid file type', details: validation.error });
@@ -67,13 +67,16 @@ router.post('/', upload.single('book'), async (req, res) => {
 });
 
 router.get('/', validateQuery(bookQuerySchema), (req, res) => {
-  const { page = 1, limit = 20, search, collection_id, status } = req.query as any;
+  const { page = 1, limit = 20, search, collection_id, status, tags, tagMode = 'OR' } = req.query as any;
   const offset = (page - 1) * limit;
   const database = db();
 
   let sql = 'SELECT DISTINCT b.* FROM books b';
   const params: any[] = [];
   const conditions: string[] = [];
+
+  // Track if we need JOIN for OR tag filtering
+  let needTagJoin = false;
 
   if (collection_id) {
     sql += ' JOIN book_collections bc ON b.id = bc.book_id';
@@ -89,6 +92,33 @@ router.get('/', validateQuery(bookQuerySchema), (req, res) => {
   if (status) {
     conditions.push('b.reading_status = ?');
     params.push(status);
+  }
+
+  // Tag filtering
+  if (tags) {
+    const tagIds = (tags as string).split(',').map((t: string) => parseInt(t, 10)).filter((n: number) => !isNaN(n));
+
+    if (tagIds.length > 0) {
+      if (tagMode === 'AND') {
+        // AND logic: book must have ALL specified tags
+        const subquery = `
+          b.id IN (
+            SELECT bt.book_id
+            FROM book_tags bt
+            WHERE bt.tag_id IN (${tagIds.map(() => '?').join(',')})
+            GROUP BY bt.book_id
+            HAVING COUNT(DISTINCT bt.tag_id) = ?
+          )
+        `;
+        conditions.push(subquery);
+        params.push(...tagIds, tagIds.length);
+      } else {
+        // OR logic: book must have ANY of the specified tags
+        sql += ' JOIN book_tags bt ON b.id = bt.book_id';
+        conditions.push(`bt.tag_id IN (${tagIds.map(() => '?').join(',')})`);
+        params.push(...tagIds);
+      }
+    }
   }
 
   if (conditions.length > 0) {
@@ -119,6 +149,33 @@ router.get('/', validateQuery(bookQuerySchema), (req, res) => {
   if (status) {
     countConditions.push('b.reading_status = ?');
     countParams.push(status);
+  }
+
+  // Tag filtering for count query
+  if (tags) {
+    const tagIds = (tags as string).split(',').map((t: string) => parseInt(t, 10)).filter((n: number) => !isNaN(n));
+
+    if (tagIds.length > 0) {
+      if (tagMode === 'AND') {
+        // AND logic for count
+        const subquery = `
+          b.id IN (
+            SELECT bt.book_id
+            FROM book_tags bt
+            WHERE bt.tag_id IN (${tagIds.map(() => '?').join(',')})
+            GROUP BY bt.book_id
+            HAVING COUNT(DISTINCT bt.tag_id) = ?
+          )
+        `;
+        countConditions.push(subquery);
+        countParams.push(...tagIds, tagIds.length);
+      } else {
+        // OR logic for count
+        countSql += ' JOIN book_tags bt ON b.id = bt.book_id';
+        countConditions.push(`bt.tag_id IN (${tagIds.map(() => '?').join(',')})`);
+        countParams.push(...tagIds);
+      }
+    }
   }
 
   if (countConditions.length > 0) {

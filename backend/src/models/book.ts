@@ -218,7 +218,55 @@ async function initDatabase(): Promise<SQLiteDatabase> {
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_collections_collection ON book_collections(collection_id)`);
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_tags_book ON book_tags(book_id)`);
   dbInstance.exec(`CREATE INDEX IF NOT EXISTS idx_book_tags_tag ON book_tags(tag_id)`);
-  
+
+  // Run tag data migration from books.tags TEXT field
+  const migrationComplete = dbInstance.get(
+    "SELECT value FROM metadata WHERE key = 'tags_migration_complete'"
+  );
+
+  if (!migrationComplete || migrationComplete.value !== 'true') {
+    // Get all books with non-null tags
+    const booksWithTags = dbInstance.all(
+      "SELECT id, tags FROM books WHERE tags IS NOT NULL AND tags != ''"
+    );
+
+    for (const book of booksWithTags) {
+      // Parse comma-separated tags (handle multiple separators)
+      const tagNames = (book.tags as string)
+        .split(/[,;，；]/) // Support comma, semicolon, Chinese variants
+        .map((t: string) => t.trim())
+        .filter((t: string) => t.length > 0);
+
+      for (const tagName of tagNames) {
+        // Get or create tag
+        let tag = dbInstance.get('SELECT id FROM tags WHERE name = ?', [tagName]);
+        if (!tag) {
+          const result = dbInstance.run(
+            'INSERT INTO tags (name) VALUES (?)',
+            [tagName]
+          );
+          tag = { id: result.lastInsertRowid };
+        }
+
+        // Link book to tag (ignore if already exists)
+        try {
+          dbInstance.run(
+            'INSERT INTO book_tags (book_id, tag_id) VALUES (?, ?)',
+            [book.id, tag.id]
+          );
+        } catch (e: any) {
+          // Ignore duplicate key error
+          if (!e.message?.includes('CONSTRAINT')) throw e;
+        }
+      }
+    }
+
+    // Mark migration as complete
+    dbInstance.run(
+      "INSERT OR REPLACE INTO metadata (key, value) VALUES ('tags_migration_complete', 'true')"
+    );
+  }
+
   await dbInstance.save();
   
   return dbInstance;

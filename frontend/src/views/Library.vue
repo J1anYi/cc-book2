@@ -35,6 +35,14 @@
           <option value="read">✅ 已读</option>
         </select>
       </div>
+      <div class="filter-box">
+        <select v-model="selectedSeries" @change="handleSeriesChange">
+          <option :value="null">全部系列</option>
+          <option v-for="ser in seriesList" :key="ser.id" :value="ser.id">
+            📚 {{ ser.name }} ({{ ser.book_count }})
+          </option>
+        </select>
+      </div>
     </div>
 
     <!-- Tag Filter -->
@@ -128,6 +136,7 @@ import { getBooks, getCategories, type Book, type Category } from '../api/books'
 import { getCollections, type Collection } from '../api/collections';
 import { getReadingHistory } from '../api/reading';
 import { getTags, type Tag } from '../api/tags';
+import { getSeries, type Series } from '../api/series';
 
 const router = useRouter();
 
@@ -142,6 +151,8 @@ const selectedStatus = ref<string | null>(null);
 const tags = ref<Tag[]>([]);
 const selectedTags = ref<Set<number>>(new Set());
 const tagFilterMode = ref<'AND' | 'OR'>('OR');
+const seriesList = ref<Series[]>([]);
+const selectedSeries = ref<number | null>(null);
 
 const recentBooks = computed(() => {
   return readingHistory.value
@@ -210,7 +221,8 @@ async function handleTagChange() {
       selectedCollection.value || undefined,
       selectedStatus.value || undefined,
       tagIds || undefined,
-      tagFilterMode.value
+      tagFilterMode.value,
+      selectedSeries.value || undefined
     );
     books.value = booksData;
   } catch (error) {
@@ -227,16 +239,18 @@ function toggleTagMode() {
 
 async function loadData() {
   try {
-    const [booksData, categoriesData, collectionsData, tagsData, historyData] = await Promise.all([
+    const [booksData, categoriesData, collectionsData, seriesData, tagsData, historyData] = await Promise.all([
       getBooks(),
       getCategories(),
       getCollections(),
+      getSeries(),
       getTags(),
       getReadingHistory()
     ]);
     books.value = booksData;
     categories.value = categoriesData;
     collections.value = collectionsData;
+    seriesList.value = seriesData;
     tags.value = tagsData;
     readingHistory.value = historyData;
   } catch (error) {
@@ -252,7 +266,8 @@ async function handleCollectionChange() {
       selectedCollection.value,
       selectedStatus.value || undefined,
       tagIds || undefined,
-      tagFilterMode.value
+      tagFilterMode.value,
+      selectedSeries.value || undefined
     );
     books.value = booksData;
   } catch (error) {
@@ -268,11 +283,29 @@ async function handleStatusChange() {
       selectedCollection.value || undefined,
       selectedStatus.value,
       tagIds || undefined,
-      tagFilterMode.value
+      tagFilterMode.value,
+      selectedSeries.value || undefined
     );
     books.value = booksData;
   } catch (error) {
     console.error('Failed to filter by status:', error);
+  }
+}
+
+async function handleSeriesChange() {
+  try {
+    const tagIds = Array.from(selectedTags.value).join(',');
+    const booksData = await getBooks(
+      undefined,
+      selectedCollection.value || undefined,
+      selectedStatus.value || undefined,
+      tagIds || undefined,
+      tagFilterMode.value,
+      selectedSeries.value || undefined
+    );
+    books.value = booksData;
+  } catch (error) {
+    console.error('Failed to filter by series:', error);
   }
 }
 
